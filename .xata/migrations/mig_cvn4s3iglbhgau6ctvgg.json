@@ -1,0 +1,25 @@
+{
+  "done": true,
+  "migration": {
+    "name": "mig_cvn4s3iglbhgau6ctvgg",
+    "operations": [
+      {
+        "add_column": {
+          "table": "product",
+          "column": {
+            "name": "barcode",
+            "type": "int",
+            "unique": true,
+            "comment": "",
+            "nullable": true
+          }
+        }
+      }
+    ]
+  },
+  "migrationType": "pgroll",
+  "name": "mig_cvn4s3iglbhgau6ctvgg",
+  "parent": "mig_cvn4ruvo1tkgc98jgh7g",
+  "schema": "public",
+  "startedAt": "2025-04-03T08:59:58.993884Z"
+}

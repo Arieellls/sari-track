@@ -1,0 +1,24 @@
+{
+  "done": true,
+  "migration": {
+    "name": "mig_cvn60o5fchh2dtob7i3g",
+    "operations": [
+      {
+        "add_column": {
+          "table": "product",
+          "column": {
+            "name": "expiresat",
+            "type": "timestamptz",
+            "comment": "",
+            "nullable": true
+          }
+        }
+      }
+    ]
+  },
+  "migrationType": "pgroll",
+  "name": "mig_cvn60o5fchh2dtob7i3g",
+  "parent": "mig_cvn4sddfchh2dtob7hug",
+  "schema": "public",
+  "startedAt": "2025-04-03T10:18:09.176425Z"
+}

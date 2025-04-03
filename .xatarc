@@ -1,0 +1,6 @@
+{
+  "databaseURL": "https://SiteSeeker-s-workspace-7hvhga.us-east-1.xata.sh/db/minimart",
+  "codegen": {
+    "output": "src/xata.ts"
+  }
+}
