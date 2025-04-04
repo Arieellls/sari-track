@@ -14,6 +14,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { searchProduct } from "../../_actions/getProducts";
+import { AddDialog } from "../AddDialog";
+import { ProductDialog } from "./ProductDialog";
 
 interface Product {
   id: string;
@@ -44,6 +46,9 @@ export default function Products({
   const [isSearching, setIsSearching] = useState(false);
   const [searchPerformed, setSearchPerformed] = useState(false);
   const [noSearchResults, setNoSearchResults] = useState(false);
+
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const getDisplayedProducts = () => {
     if (searchResult && searchResult.length > 0) {
@@ -104,41 +109,49 @@ export default function Products({
 
   const displayedProducts = getDisplayedProducts();
 
+  const handleProductClick = (product: any) => {
+    setSelectedProduct(product);
+    setIsDialogOpen(true);
+  };
+
   return (
     <div className="flex flex-col gap-8 min-h-[calc(100vh-56px-64px-20px-24px-56px-48px)] w-[100%]">
-      <div className="flex flex-col-reverse gap-2 w-full sm:flex-row">
-        {!searchResult && (
-          <Filter
-            selectedFilter={selectedFilter}
-            setSelectedFilter={setSelectedFilter}
-          />
-        )}
-        <div className="flex gap-2 w-full">
-          <Input
-            type="text"
-            placeholder="Search for a product..."
-            className="w-full sm:w-[350px]"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                handleSearch();
-              }
-            }}
-          />
-          <Button
-            onClick={handleSearch}
-            disabled={isSearching}
-            variant="default"
-          >
-            {isSearching ? "Searching..." : "Search"}
-          </Button>
-          {(searchResult || noSearchResults) && (
-            <Button onClick={handleClearSearch} variant="outline">
-              Clear
-            </Button>
+      <div className="flex flex-col gap-6 justify-between w-full sm:flex-row">
+        <div className="flex gap-2 flex-col-reverse w-full sm:flex-row">
+          {!searchResult && (
+            <Filter
+              selectedFilter={selectedFilter}
+              setSelectedFilter={setSelectedFilter}
+            />
           )}
+          <div className="flex gap-2 w-full">
+            <Input
+              type="text"
+              placeholder="Search for a product..."
+              className="w-full sm:w-[350px]"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleSearch();
+                }
+              }}
+            />
+            <Button
+              onClick={handleSearch}
+              disabled={isSearching}
+              variant="default"
+            >
+              {isSearching ? "Searching..." : "Search"}
+            </Button>
+            {(searchResult || noSearchResults) && (
+              <Button onClick={handleClearSearch} variant="outline">
+                Clear
+              </Button>
+            )}
+          </div>
         </div>
+        <AddDialog />
       </div>
 
       <div className="flex flex-col gap-2">
@@ -184,6 +197,7 @@ export default function Products({
                   selectedFilter === "out-of-stock" ||
                   selectedFilter === "low-stock"
                 }
+                onClick={() => handleProductClick(product)}
               />
             ))
           ) : (
@@ -193,10 +207,15 @@ export default function Products({
                 : "No products match the selected filter."}
             </p>
           )}
+          <ProductDialog
+            isOpen={isDialogOpen}
+            onOpenChange={setIsDialogOpen}
+            product={selectedProduct || undefined}
+          />
         </div>
       </div>
 
-      {!searchResult && !noSearchResults && selectedFilter === "all" && (
+      {/* {!searchResult && !noSearchResults && selectedFilter === "all" && (
         <div className="flex flex-col gap-2">
           <h1 className="text-2xl font-bold">Products Nearing Expiration</h1>
           <div className="w-full flex flex-col gap-4 sm:flex-wrap sm:flex-row">
@@ -221,7 +240,7 @@ export default function Products({
             )}
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 }

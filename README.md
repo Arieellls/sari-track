@@ -13,7 +13,7 @@ Sari-Track is a web application designed for smarter, faster, and effortless inv
 
 1. Clone the repository:
    ```sh
-   git clone <repository-url>
+   git clone https://github.com/Arieellls/sari-track.git
    cd sari-track
    ```
 2. Install dependencies:

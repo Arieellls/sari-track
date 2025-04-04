@@ -22,25 +22,29 @@ export default async function ProductPage() {
         id: product.id,
         name: product.name ?? "Unknown",
         quantity: product.quantity ?? 0,
-        expiresAt: product.expiresAt ?? undefined
+        expiresAt: product.expiresAt ?? undefined,
+        barcode: product.barcode ?? undefined
       }))}
       productsNearExpiration={nearExpirationProducts.map((product) => ({
         id: product.id,
         name: product.name ?? "Unknown",
         quantity: product.quantity ?? 0,
-        expiresAt: product.expiresAt ?? undefined
+        expiresAt: product.expiresAt ?? undefined,
+        barcode: product.barcode ?? undefined
       }))}
       outOfStockProducts={outOfStockProducts.map((product) => ({
         id: product.id,
         name: product.name ?? "Unknown",
         quantity: product.quantity ?? 0,
-        expiresAt: product.expiresAt ?? undefined
+        expiresAt: product.expiresAt ?? undefined,
+        barcode: product.barcode ?? undefined
       }))}
       inStockProducts={inStock.map((product) => ({
         id: product.id,
         name: product.name ?? "Unknown",
         quantity: product.quantity ?? 0,
-        expiresAt: product.expiresAt ?? undefined
+        expiresAt: product.expiresAt ?? undefined,
+        barcode: product.barcode ?? undefined
       }))}
     />
   );
