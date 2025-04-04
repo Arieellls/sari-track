@@ -15,6 +15,7 @@ import {
   like
 } from "drizzle-orm/expressions";
 import { sql } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 
 const xata: XataHttpClient = getXataClient() as unknown as XataHttpClient;
 const db = drizzle(xata);
@@ -107,5 +108,67 @@ export const searchProduct = async (searchTerm: string) => {
   } catch (error) {
     console.error("Error searching for product:", error);
     return null;
+  }
+};
+
+export const getLowStockProducts = async () => {
+  try {
+    const lowStockProducts = await db
+      .select()
+      .from(Products)
+      .where(lte(Products.quantity, 10))
+      .orderBy(desc(Products.createdAt));
+
+    return lowStockProducts;
+  } catch (error) {
+    console.error("Error fetching low stock products:", error);
+    return [];
+  }
+};
+
+interface UpdateProductQuantityResponse {
+  success: boolean;
+  error?: unknown;
+}
+
+export const updateProductQuantity = async (
+  productId: string,
+  newQuantity: number
+): Promise<UpdateProductQuantityResponse> => {
+  try {
+    await db
+      .update(Products)
+      .set({ quantity: newQuantity })
+      .where(eq(Products.id, productId));
+
+    console.log(`Updated product ${productId} quantity to ${newQuantity}`);
+    revalidatePath("/alerts-and-notifications"); // Revalidate the inventory page to reflect changes
+    revalidatePath("/inventory");
+    return { success: true };
+  } catch (error) {
+    console.error(`Error updating product ${productId} quantity:`, error);
+    return { success: false, error };
+  }
+};
+
+export const updateProductExpiry = async (id: string, expiryDate: string) => {
+  try {
+    const updatedProduct = await db
+      .update(Products)
+      .set({ expiresAt: new Date(expiryDate) })
+      .where(eq(Products.id, id));
+
+    if (updatedProduct) {
+      revalidatePath("/alerts-and-notifications"); // Revalidate the inventory page to reflect changes
+      return { success: true };
+    } else {
+      throw new Error("Product not found or failed to update expiry date.");
+    }
+  } catch (error) {
+    console.error("Error updating product expiry:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "An error occurred."
+    };
   }
 };

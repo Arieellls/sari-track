@@ -10,6 +10,9 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator
 } from "@/components/ui/breadcrumb";
+import SectionWrapper from "../_components/Wrapper";
+import AlertsProducts from "../_components/alerts-and-notifcations/AlertsProducts";
+import AlertPage from "../_components/alerts-and-notifcations/AlertPage";
 
 export default function CategoriesPage() {
   return (
@@ -33,7 +36,9 @@ export default function CategoriesPage() {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <PlaceholderContent />
+      <SectionWrapper>
+        <AlertPage />
+      </SectionWrapper>
     </ContentLayout>
   );
 }

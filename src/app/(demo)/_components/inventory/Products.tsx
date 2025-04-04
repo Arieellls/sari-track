@@ -186,6 +186,7 @@ export default function Products({
             displayedProducts.map((product) => (
               <ProductTile
                 key={product.id}
+                id={product.id}
                 name={product.name || "Unknown Product"}
                 quantity={product.quantity || 0}
                 expires={
