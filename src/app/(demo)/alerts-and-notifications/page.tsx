@@ -1,7 +1,6 @@
 import Link from "next/link";
 
 import PlaceholderContent from "@/components/demo/placeholder-content";
-import { ContentLayout } from "@/components/admin-panel/content-layout";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -13,6 +12,7 @@ import {
 import SectionWrapper from "../_components/Wrapper";
 import AlertsProducts from "../_components/alerts-and-notifcations/AlertsProducts";
 import AlertPage from "../_components/alerts-and-notifcations/AlertPage";
+import ContentLayout from "@/components/admin-panel/content-layout";
 
 export default function CategoriesPage() {
   return (

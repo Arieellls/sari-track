@@ -1,6 +1,5 @@
 "use client";
 import Link from "next/link";
-import { ContentLayout } from "@/components/admin-panel/content-layout";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -23,6 +22,7 @@ import { DashboardChart } from "../_components/dashboard/DashboardChart";
 import SectionWrapper from "../_components/Wrapper";
 import { PieChart } from "../_components/dashboard/PieChart";
 import { ProductQuantityChart } from "../_components/dashboard/ProductQuantityChart";
+import ContentLayout from "@/components/admin-panel/content-layout";
 
 export default function DashboardPage() {
   const sidebar = useStore(useSidebar, (x) => x);

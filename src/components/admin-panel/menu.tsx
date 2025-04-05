@@ -31,7 +31,7 @@ export function Menu({ isOpen }: MenuProps) {
   const handleSignOut = async () => {
     console.log("Attempting to sign out...");
     try {
-      await signOut(); // Call signOut function
+      authClient.signOut();
       router.push("/login"); // Redirect to login page after signing out
     } catch (error) {
       console.error("Error during logout:", error);
