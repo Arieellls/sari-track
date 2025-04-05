@@ -2,6 +2,7 @@
 
 import { headers } from "next/headers";
 import { auth } from "../lib/auth";
+import { authClient } from "../lib/auth-client";
 
 export const signIn = async (formData: any) => {
   await auth.api.signInEmail({
@@ -22,9 +23,9 @@ export const signUp = async (formData: any) => {
   });
 };
 
-export const signOut = async () => {
-  await auth.api.signOut;
-};
+// export const signOut = async () => {
+//   authClient.signOut();
+// };
 
 export const getUser = async () => {
   const session = await auth.api.getSession({

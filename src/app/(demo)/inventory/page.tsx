@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import PlaceholderContent from "@/components/demo/placeholder-content";
-import { ContentLayout } from "@/components/admin-panel/content-layout";
+
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -14,6 +14,7 @@ import ProductTile from "../_components/inventory/ProductTile";
 import SectionWrapper from "../_components/Wrapper";
 import Products from "../_components/inventory/Products";
 import ProductPage from "../_components/inventory/ProductPage";
+import ContentLayout from "@/components/admin-panel/content-layout";
 
 export default function CategoriesPage() {
   return (

@@ -22,9 +22,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { formatName } from "../../lib/formatName";
-import { signOut } from "../../../server/user";
 import { useRouter } from "next/navigation";
-
+import { authClient } from "../../../lib/auth-client";
 type UserProps = {
   name?: string | null;
   email?: string | null;
@@ -36,7 +35,7 @@ export function UserNav({ user }: { user?: UserProps }) {
   const handleSignOut = async () => {
     console.log("Attempting to sign out...");
     try {
-      await signOut();
+      authClient.signOut();
       router.push("/login");
     } catch (error) {
       console.error("Error during logout:", error);

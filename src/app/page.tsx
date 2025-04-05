@@ -5,8 +5,15 @@ import { ArrowRightIcon, GitHubLogoIcon } from "@radix-ui/react-icons";
 
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/mode-toggle";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { getUser } from "../../server/user";
+import { authClient } from "../../lib/auth-client";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const user = await getUser();
+  console.log(user);
+
   return (
     <div className="flex flex-col min-h-screen">
       <header className="z-[50] sticky top-0 w-full bg-background/95 border-b backdrop-blur-sm dark:bg-black/[0.6] border-border/40">
@@ -46,17 +53,16 @@ export default function HomePage() {
             </span>
             <div className="flex w-full items-center justify-center space-x-4 py-4 md:pb-6">
               <Button variant="default" asChild>
-                <Link href="/dashboard">
-                  Demo
+                <Link
+                  href={`${user ? "/dashboard" : "/login"}`}
+                  rel="noopener noreferrer"
+                >
+                  {user ? "Dashboard" : "Login"}
                   <ArrowRightIcon className="ml-2" />
                 </Link>
               </Button>
               <Button variant="outline" asChild>
-                <Link
-                  href="https://ui.shadcn.com/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <Link href="/register" rel="noopener noreferrer">
                   Sign Up
                 </Link>
               </Button>
