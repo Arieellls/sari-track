@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Ellipsis, LogOut } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 import { cn } from "@/lib/utils";
 import { getMenuList } from "@/lib/menu-list";
@@ -15,6 +15,8 @@ import {
   TooltipContent,
   TooltipProvider
 } from "@/components/ui/tooltip";
+import { authClient } from "../../../lib/auth-client";
+import { signOut } from "../../../server/user";
 
 interface MenuProps {
   isOpen: boolean | undefined;
@@ -22,7 +24,19 @@ interface MenuProps {
 
 export function Menu({ isOpen }: MenuProps) {
   const pathname = usePathname();
+  const router = useRouter(); // Move useRouter inside the component
   const menuList = getMenuList(pathname);
+
+  // Move the signOut function inside the component
+  const handleSignOut = async () => {
+    console.log("Attempting to sign out...");
+    try {
+      await signOut(); // Call signOut function
+      router.push("/login"); // Redirect to login page after signing out
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+  };
 
   return (
     <ScrollArea className="[&>div>div[style]]:!block">
@@ -118,7 +132,7 @@ export function Menu({ isOpen }: MenuProps) {
               <Tooltip delayDuration={100}>
                 <TooltipTrigger asChild>
                   <Button
-                    onClick={() => {}}
+                    onClick={handleSignOut} // Use the new function name here
                     variant="outline"
                     className="w-full justify-center h-10 mt-5"
                   >

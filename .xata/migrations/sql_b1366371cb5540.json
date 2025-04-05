@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_b1366371cb5540",
+    "operations": [
+      {
+        "sql": {
+          "up": "CREATE TABLE account (xata_id text PRIMARY KEY, account_id text NOT NULL, provider_id text NOT NULL, user_id text NOT NULL, access_token text, refresh_token text, id_token text, access_token_expires_at timestamp, refresh_token_expires_at timestamp, scope text, password text, FOREIGN KEY (user_id) REFERENCES app_user (xata_id) ON DELETE CASCADE)"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_b1366371cb5540",
+  "parent": "sql_046ba373c05a70",
+  "schema": "public",
+  "startedAt": "2025-04-05T05:40:12.116281Z"
+}

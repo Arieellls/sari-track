@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_84e3d58af8d07f",
+    "operations": [
+      {
+        "sql": {
+          "up": "CREATE TABLE app_user (xata_id text PRIMARY KEY, name text NOT NULL, email text NOT NULL UNIQUE, email_verified boolean NOT NULL, image text)"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_84e3d58af8d07f",
+  "parent": "mig_cvobr52glbhgau6cu9e0",
+  "schema": "public",
+  "startedAt": "2025-04-05T05:40:11.322993Z"
+}

@@ -8,6 +8,128 @@ import type {
 
 const tables = [
   {
+    name: "account",
+    checkConstraints: {},
+    foreignKeys: {
+      account_user_id_fkey: {
+        name: "account_user_id_fkey",
+        columns: ["user_id"],
+        referencedTable: "user",
+        referencedColumns: ["xata_id"],
+        onDelete: "CASCADE",
+      },
+    },
+    primaryKey: ["xata_id"],
+    uniqueConstraints: {},
+    columns: [
+      {
+        name: "access_token",
+        type: "text",
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+        comment: "",
+      },
+      {
+        name: "access_token_expires_at",
+        type: "timestamp without time zone",
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+        comment: "",
+      },
+      {
+        name: "account_id",
+        type: "text",
+        notNull: true,
+        unique: false,
+        defaultValue: null,
+        comment: "",
+      },
+      {
+        name: "createdat",
+        type: "datetime",
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+        comment: "",
+      },
+      {
+        name: "id_token",
+        type: "text",
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+        comment: "",
+      },
+      {
+        name: "password",
+        type: "text",
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+        comment: "",
+      },
+      {
+        name: "provider_id",
+        type: "text",
+        notNull: true,
+        unique: false,
+        defaultValue: null,
+        comment: "",
+      },
+      {
+        name: "refresh_token",
+        type: "text",
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+        comment: "",
+      },
+      {
+        name: "refresh_token_expires_at",
+        type: "timestamp without time zone",
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+        comment: "",
+      },
+      {
+        name: "scope",
+        type: "text",
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+        comment: "",
+      },
+      {
+        name: "updatedat",
+        type: "datetime",
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+        comment: "",
+      },
+      {
+        name: "user_id",
+        type: "link",
+        link: { table: "user" },
+        notNull: true,
+        unique: false,
+        defaultValue: null,
+        comment: '{"xata.link":"user"}',
+      },
+      {
+        name: "xata_id",
+        type: "text",
+        notNull: true,
+        unique: true,
+        defaultValue: null,
+        comment: "",
+      },
+    ],
+  },
+  {
     name: "product",
     checkConstraints: {
       product_xata_id_length_xata_id: {
@@ -31,7 +153,7 @@ const tables = [
     columns: [
       {
         name: "barcode",
-        type: "multiple",
+        type: "text",
         notNull: false,
         unique: true,
         defaultValue: null,
@@ -95,16 +217,232 @@ const tables = [
       },
     ],
   },
+  {
+    name: "session",
+    checkConstraints: {},
+    foreignKeys: {
+      session_user_id_fkey: {
+        name: "session_user_id_fkey",
+        columns: ["user_id"],
+        referencedTable: "user",
+        referencedColumns: ["xata_id"],
+        onDelete: "CASCADE",
+      },
+    },
+    primaryKey: ["xata_id"],
+    uniqueConstraints: {
+      session_token_key: { name: "session_token_key", columns: ["token"] },
+    },
+    columns: [
+      {
+        name: "created_at",
+        type: "datetime",
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+        comment: "",
+      },
+      {
+        name: "expires_at",
+        type: "timestamp without time zone",
+        notNull: true,
+        unique: false,
+        defaultValue: null,
+        comment: "",
+      },
+      {
+        name: "ip_address",
+        type: "text",
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+        comment: "",
+      },
+      {
+        name: "token",
+        type: "text",
+        notNull: true,
+        unique: true,
+        defaultValue: null,
+        comment: "",
+      },
+      {
+        name: "updated_at",
+        type: "datetime",
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+        comment: "",
+      },
+      {
+        name: "user_agent",
+        type: "text",
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+        comment: "",
+      },
+      {
+        name: "user_id",
+        type: "link",
+        link: { table: "user" },
+        notNull: true,
+        unique: false,
+        defaultValue: null,
+        comment: '{"xata.link":"user"}',
+      },
+      {
+        name: "xata_id",
+        type: "text",
+        notNull: true,
+        unique: true,
+        defaultValue: null,
+        comment: "",
+      },
+    ],
+  },
+  {
+    name: "user",
+    checkConstraints: {},
+    foreignKeys: {},
+    primaryKey: ["xata_id"],
+    uniqueConstraints: {
+      app_user_email_key: { name: "app_user_email_key", columns: ["email"] },
+    },
+    columns: [
+      {
+        name: "createdat",
+        type: "datetime",
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+        comment: "",
+      },
+      {
+        name: "email",
+        type: "text",
+        notNull: true,
+        unique: true,
+        defaultValue: null,
+        comment: "",
+      },
+      {
+        name: "email_verified",
+        type: "bool",
+        notNull: true,
+        unique: false,
+        defaultValue: null,
+        comment: "",
+      },
+      {
+        name: "image",
+        type: "text",
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+        comment: "",
+      },
+      {
+        name: "name",
+        type: "text",
+        notNull: true,
+        unique: false,
+        defaultValue: null,
+        comment: "",
+      },
+      {
+        name: "password",
+        type: "text",
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+        comment: "",
+      },
+      {
+        name: "updatedat",
+        type: "datetime",
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+        comment: "",
+      },
+      {
+        name: "xata_id",
+        type: "text",
+        notNull: true,
+        unique: true,
+        defaultValue: null,
+        comment: "",
+      },
+    ],
+  },
+  {
+    name: "verification",
+    checkConstraints: {},
+    foreignKeys: {},
+    primaryKey: ["xata_id"],
+    uniqueConstraints: {},
+    columns: [
+      {
+        name: "expires_at",
+        type: "timestamp without time zone",
+        notNull: true,
+        unique: false,
+        defaultValue: null,
+        comment: "",
+      },
+      {
+        name: "identifier",
+        type: "text",
+        notNull: true,
+        unique: false,
+        defaultValue: null,
+        comment: "",
+      },
+      {
+        name: "value",
+        type: "text",
+        notNull: true,
+        unique: false,
+        defaultValue: null,
+        comment: "",
+      },
+      {
+        name: "xata_id",
+        type: "text",
+        notNull: true,
+        unique: true,
+        defaultValue: null,
+        comment: "",
+      },
+    ],
+  },
 ] as const;
 
 export type SchemaTables = typeof tables;
 export type InferredTypes = SchemaInference<SchemaTables>;
 
+export type Account = InferredTypes["account"];
+export type AccountRecord = Account & XataRecord;
+
 export type Product = InferredTypes["product"];
 export type ProductRecord = Product & XataRecord;
 
+export type Session = InferredTypes["session"];
+export type SessionRecord = Session & XataRecord;
+
+export type User = InferredTypes["user"];
+export type UserRecord = User & XataRecord;
+
+export type Verification = InferredTypes["verification"];
+export type VerificationRecord = Verification & XataRecord;
+
 export type DatabaseSchema = {
+  account: AccountRecord;
   product: ProductRecord;
+  session: SessionRecord;
+  user: UserRecord;
+  verification: VerificationRecord;
 };
 
 const DatabaseClient = buildClient();

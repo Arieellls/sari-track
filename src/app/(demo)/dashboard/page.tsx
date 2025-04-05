@@ -19,6 +19,10 @@ import {
 } from "@/components/ui/tooltip";
 import { useSidebar } from "@/hooks/use-sidebar";
 import { useStore } from "@/hooks/use-store";
+import { DashboardChart } from "../_components/dashboard/DashboardChart";
+import SectionWrapper from "../_components/Wrapper";
+import { PieChart } from "../_components/dashboard/PieChart";
+import { ProductQuantityChart } from "../_components/dashboard/ProductQuantityChart";
 
 export default function DashboardPage() {
   const sidebar = useStore(useSidebar, (x) => x);
@@ -39,40 +43,12 @@ export default function DashboardPage() {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <TooltipProvider>
-        <div className="flex gap-6 mt-6">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="is-hover-open"
-                  onCheckedChange={(x) => setSettings({ isHoverOpen: x })}
-                  checked={settings.isHoverOpen}
-                />
-                <Label htmlFor="is-hover-open">Hover Open</Label>
-              </div>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>When hovering on the sidebar in mini state, it will open</p>
-            </TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="disable-sidebar"
-                  onCheckedChange={(x) => setSettings({ disabled: x })}
-                  checked={settings.disabled}
-                />
-                <Label htmlFor="disable-sidebar">Disable Sidebar</Label>
-              </div>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Hide sidebar</p>
-            </TooltipContent>
-          </Tooltip>
-        </div>
-      </TooltipProvider>
+      <SectionWrapper className="grid grid-cols-1 sm:grid-cols-2 gap-5 gap-x-4">
+        <DashboardChart />
+        <PieChart />
+        <ProductQuantityChart />
+        {/* Add a fourth chart or element here if needed to fully fill 2x2 */}
+      </SectionWrapper>
     </ContentLayout>
   );
 }

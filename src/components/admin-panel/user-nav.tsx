@@ -21,65 +21,86 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 
-export function UserNav() {
-  return (
-    <DropdownMenu>
-      <TooltipProvider disableHoverableContent>
-        <Tooltip delayDuration={100}>
-          <TooltipTrigger asChild>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="relative h-8 w-8 rounded-full"
-                >
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src="#" alt="Avatar" />
-                    <AvatarFallback className="bg-transparent">
-                      JD
-                    </AvatarFallback>
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem>Profile</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </TooltipTrigger>
-          <TooltipContent side="bottom">Profile</TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+import { formatName } from "../../lib/formatName";
+import { signOut } from "../../../server/user";
+import { useRouter } from "next/navigation";
 
-      <DropdownMenuContent className="w-56" align="end" forceMount>
-        <DropdownMenuLabel className="font-normal">
-          <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">John Doe</p>
-            <p className="text-xs leading-none text-muted-foreground">
-              johndoe@example.com
-            </p>
-          </div>
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem className="hover:cursor-pointer" asChild>
-            <Link href="/dashboard" className="flex items-center">
-              <LayoutGrid className="w-4 h-4 mr-3 text-muted-foreground" />
-              Dashboard
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem className="hover:cursor-pointer" asChild>
-            <Link href="/account" className="flex items-center">
-              <User className="w-4 h-4 mr-3 text-muted-foreground" />
-              Account
-            </Link>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem className="hover:cursor-pointer" onClick={() => {}}>
-          <LogOut className="w-4 h-4 mr-3 text-muted-foreground" />
-          Sign out
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+type UserProps = {
+  name?: string | null;
+  email?: string | null;
+  id?: string | null;
+};
+
+export function UserNav({ user }: { user?: UserProps }) {
+  const router = useRouter();
+  const handleSignOut = async () => {
+    console.log("Attempting to sign out...");
+    try {
+      await signOut();
+      router.push("/login");
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+  };
+  return (
+    <TooltipProvider disableHoverableContent>
+      <Tooltip delayDuration={100}>
+        <DropdownMenu>
+          <TooltipTrigger asChild>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                className="relative h-8 w-8 rounded-full"
+              >
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src="#" alt="Avatar" />
+                  <AvatarFallback className="bg-transparent">
+                    {formatName(user?.name || "--")}
+                  </AvatarFallback>
+                </Avatar>
+              </Button>
+            </DropdownMenuTrigger>
+          </TooltipTrigger>
+
+          <TooltipContent side="bottom">Profile</TooltipContent>
+
+          <DropdownMenuContent className="w-56" align="end" forceMount>
+            <DropdownMenuLabel className="font-normal">
+              <div className="flex flex-col space-y-1">
+                <p className="text-sm font-medium leading-none">
+                  {user?.name || "--"}
+                </p>
+                <p className="text-xs leading-none text-muted-foreground">
+                  {user?.email || "--"}
+                </p>
+              </div>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuItem className="hover:cursor-pointer" asChild>
+                <Link href="/dashboard" className="flex items-center">
+                  <LayoutGrid className="w-4 h-4 mr-3 text-muted-foreground" />
+                  Dashboard
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="hover:cursor-pointer" asChild>
+                <Link href="/account" className="flex items-center">
+                  <User className="w-4 h-4 mr-3 text-muted-foreground" />
+                  Account
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              className="hover:cursor-pointer"
+              onClick={handleSignOut}
+            >
+              <LogOut className="w-4 h-4 mr-3 text-muted-foreground" />
+              Sign out
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </Tooltip>
+    </TooltipProvider>
   );
 }

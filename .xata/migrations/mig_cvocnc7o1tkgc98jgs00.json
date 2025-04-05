@@ -1,0 +1,24 @@
+{
+  "done": true,
+  "migration": {
+    "name": "mig_cvocnc7o1tkgc98jgs00",
+    "operations": [
+      {
+        "add_column": {
+          "table": "session",
+          "column": {
+            "name": "created_at",
+            "type": "timestamptz",
+            "comment": "",
+            "nullable": true
+          }
+        }
+      }
+    ]
+  },
+  "migrationType": "pgroll",
+  "name": "mig_cvocnc7o1tkgc98jgs00",
+  "parent": "mig_cvocmevo1tkgc98jgrv0",
+  "schema": "public",
+  "startedAt": "2025-04-05T06:20:33.826032Z"
+}

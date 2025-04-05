@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "mig_cvoc4ndfchh2dtob7seg",
+    "operations": [
+      {
+        "sql": {
+          "up": "COMMENT ON COLUMN \"account\".\"user_id\" IS '{\"xata.link\":\"user\"}';COMMENT ON COLUMN \"session\".\"user_id\" IS '{\"xata.link\":\"user\"}'"
+        }
+      }
+    ]
+  },
+  "migrationType": "pgroll",
+  "name": "mig_cvoc4ndfchh2dtob7seg",
+  "parent": "mig_cvoc4m7o1tkgc98jgrjg",
+  "schema": "public",
+  "startedAt": "2025-04-05T05:40:46.073967Z"
+}

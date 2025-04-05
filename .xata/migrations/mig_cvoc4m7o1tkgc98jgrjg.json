@@ -1,0 +1,19 @@
+{
+  "done": true,
+  "migration": {
+    "name": "mig_cvoc4m7o1tkgc98jgrjg",
+    "operations": [
+      {
+        "rename_table": {
+          "to": "user",
+          "from": "app_user"
+        }
+      }
+    ]
+  },
+  "migrationType": "pgroll",
+  "name": "mig_cvoc4m7o1tkgc98jgrjg",
+  "parent": "sql_a84859c5c2df41",
+  "schema": "public",
+  "startedAt": "2025-04-05T05:40:41.069956Z"
+}

@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_046ba373c05a70",
+    "operations": [
+      {
+        "sql": {
+          "up": "CREATE TABLE session (xata_id text PRIMARY KEY, expires_at timestamp NOT NULL, token text NOT NULL UNIQUE, ip_address text, user_agent text, user_id text NOT NULL, FOREIGN KEY (user_id) REFERENCES app_user (xata_id) ON DELETE CASCADE)"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_046ba373c05a70",
+  "parent": "sql_84e3d58af8d07f",
+  "schema": "public",
+  "startedAt": "2025-04-05T05:40:11.634058Z"
+}
