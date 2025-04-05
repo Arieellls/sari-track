@@ -16,7 +16,7 @@ import {
   TooltipProvider
 } from "@/components/ui/tooltip";
 import { authClient } from "../../../lib/auth-client";
-import { signOut } from "../../../server/user";
+//remove this import if not used
 
 interface MenuProps {
   isOpen: boolean | undefined;
