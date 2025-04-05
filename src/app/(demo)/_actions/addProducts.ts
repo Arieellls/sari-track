@@ -3,7 +3,7 @@
 import { XataHttpClient } from "drizzle-orm/xata-http";
 import { drizzle } from "drizzle-orm/xata-http";
 import { getXataClient } from "../../../db/xata-client";
-import { Products } from "@/db/schemas";
+import { Products } from "@/db/schema";
 import {
   desc,
   and,

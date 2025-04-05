@@ -1,0 +1,19 @@
+{
+  "done": true,
+  "migration": {
+    "name": "mig_cvoadaqglbhgau6cu98g",
+    "operations": [
+      {
+        "drop_column": {
+          "table": "user",
+          "column": "birthday"
+        }
+      }
+    ]
+  },
+  "migrationType": "pgroll",
+  "name": "mig_cvoadaqglbhgau6cu98g",
+  "parent": "mig_cvoad0fo1tkgc98jgqsg",
+  "schema": "public",
+  "startedAt": "2025-04-05T03:42:35.567871Z"
+}
