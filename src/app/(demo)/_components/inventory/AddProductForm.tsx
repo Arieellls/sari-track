@@ -18,6 +18,20 @@ import {
 import { Input } from "@/components/ui/input";
 import { addProduct } from "../../_actions/addProducts"; // Adjust this import path as needed
 import { toast } from "@/hooks/use-toast";
+import { ScanBarcode } from "lucide-react";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from "@/components/ui/dialog";
+
+import dynamic from "next/dynamic";
+
+const QRScanner = dynamic(() => import("./BarcodeScanner"), { ssr: false });
 
 const formSchema = z.object({
   productName: z.string().min(2, {
@@ -51,6 +65,7 @@ export function AddProductForm({
   onSuccess?: () => void;
 }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isScannerOpen, setIsScannerOpen] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -120,82 +135,116 @@ export function AddProductForm({
     closeDialog();
   };
 
+  const openScanner = () => {
+    setIsScannerOpen(true);
+  };
+
+  const closeScanner = () => {
+    setIsScannerOpen(false);
+  };
+
+  const handleBarcodeScan = (barcodeData: string) => {
+    // Update the form's barcode field with the scanned data
+    form.setValue("barcode", barcodeData);
+
+    // Close the scanner dialog
+    closeScanner();
+  };
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-2 text-left"
-      >
-        <FormField
-          control={form.control}
-          name="productName"
-          render={({ field }) => (
-            <FormItem className="space-y-1">
-              <FormLabel>Product Name</FormLabel>
-              <FormControl>
-                <Input placeholder="e.g. Lay's Classic Chips" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="barcode"
-          render={({ field }) => (
-            <FormItem className="space-y-1">
-              <FormLabel>Barcode</FormLabel>
-              <FormControl>
-                <Input placeholder="100101011223" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="quantity"
-          render={({ field }) => (
-            <FormItem className="space-y-1">
-              <FormLabel>Quantity</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  placeholder="Enter quantity (1-1000)"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="expirationDate"
-          render={({ field }) => (
-            <FormItem className="space-y-1">
-              <FormLabel>Expiration Date</FormLabel>
-              <FormControl>
-                <Input type="date" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div className="flex gap-2 justify-end pt-3">
-          <Button
-            variant="outline"
-            type="button"
-            onClick={onClose}
-            disabled={isSubmitting}
-          >
-            Cancel
-          </Button>
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Adding..." : "Submit"}
-          </Button>
-        </div>
-      </form>
-    </Form>
+    <>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-2 text-left"
+        >
+          <FormField
+            control={form.control}
+            name="barcode"
+            render={({ field }) => (
+              <FormItem className="space-y-1">
+                <FormLabel>Barcode</FormLabel>
+                <FormControl>
+                  <Input placeholder="100101011223" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="productName"
+            render={({ field }) => (
+              <FormItem className="space-y-1">
+                <FormLabel>Product Name</FormLabel>
+                <FormControl>
+                  <Input placeholder="e.g. Lay's Classic Chips" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="quantity"
+            render={({ field }) => (
+              <FormItem className="space-y-1">
+                <FormLabel>Quantity</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder="Enter quantity (1-1000)"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="expirationDate"
+            render={({ field }) => (
+              <FormItem className="space-y-1">
+                <FormLabel>Expiration Date</FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className="w-full flex justify-between items-center py-3">
+            <ScanBarcode
+              width={28}
+              height={28}
+              className="cursor-pointer hover:text-gray-600"
+              onClick={openScanner}
+            />
+            <div className="flex gap-2 justify-end ">
+              <Button
+                variant="outline"
+                type="button"
+                onClick={onClose}
+                disabled={isSubmitting}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Adding..." : "Submit"}
+              </Button>
+            </div>
+          </div>
+        </form>
+      </Form>
+
+      <Dialog open={isScannerOpen} onOpenChange={setIsScannerOpen}>
+        <DialogContent className="w-96 rounded-lg sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>QR/Barcode Scanner</DialogTitle>
+          </DialogHeader>
+          <QRScanner onScan={handleBarcodeScan} onClose={closeScanner} />
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

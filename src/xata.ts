@@ -351,14 +351,6 @@ const tables = [
         comment: "",
       },
       {
-        name: "password",
-        type: "text",
-        notNull: false,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
         name: "updatedat",
         type: "datetime",
         notNull: false,
@@ -383,6 +375,14 @@ const tables = [
     primaryKey: ["xata_id"],
     uniqueConstraints: {},
     columns: [
+      {
+        name: "createdAt",
+        type: "datetime",
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+        comment: "",
+      },
       {
         name: "expires_at",
         type: "timestamp without time zone",

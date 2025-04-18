@@ -10,6 +10,12 @@ const xata: XataHttpClient = getXataClient() as unknown as XataHttpClient;
 const db = drizzle(xata);
 
 export const auth = betterAuth({
+  socialProviders: {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string
+    }
+  },
   emailAndPassword: {
     enabled: true
   },

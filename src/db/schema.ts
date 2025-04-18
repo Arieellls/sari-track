@@ -7,7 +7,7 @@ import {
   date,
   boolean,
   integer,
-  timestamp
+  timestamp,
 } from "drizzle-orm/pg-core";
 import { z } from "zod";
 
@@ -18,7 +18,7 @@ export const Products = pgTable("product", {
   quantity: integer("quantity"),
   expiresAt: timestamp("expiresat"),
   createdAt: timestamp("xata_createdat").defaultNow(),
-  updatedAt: timestamp("xata_updatedat").defaultNow()
+  updatedAt: timestamp("xata_updatedat").defaultNow(),
 });
 
 // export const User = pgTable("user", {
@@ -40,7 +40,9 @@ export const user = pgTable("user", {
   emailVerified: boolean("email_verified").notNull(),
   image: text("image"),
   createdAt: timestamp("createdat").notNull(),
-  updatedAt: timestamp("updatedat").notNull() // Add this line
+  updatedAt: timestamp("updatedat").notNull(),
+  role: text("role").notNull().default("staff"),
+  isApproved: boolean("isApproved").notNull().default(false),
 });
 
 export const session = pgTable("session", {
@@ -53,7 +55,7 @@ export const session = pgTable("session", {
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
   createdAt: timestamp("created_at").notNull(),
-  updatedAt: timestamp("updated_at").notNull()
+  updatedAt: timestamp("updated_at").notNull(),
 });
 
 export const account = pgTable("account", {
@@ -71,14 +73,16 @@ export const account = pgTable("account", {
   scope: text("scope"),
   password: text("password"),
   createdAt: timestamp("createdat").defaultNow(),
-  updatedAt: timestamp("updatedat").defaultNow()
+  updatedAt: timestamp("updatedat").defaultNow(),
 });
 
 export const verification = pgTable("verification", {
   id: text("xata_id").primaryKey(),
   identifier: text("identifier").notNull(),
   value: text("value").notNull(),
-  expiresAt: timestamp("expires_at").notNull()
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("createdat").defaultNow(),
+  updatedAt: timestamp("updatedat").defaultNow(),
 });
 
 export const schema = { Products, user, session, account, verification };

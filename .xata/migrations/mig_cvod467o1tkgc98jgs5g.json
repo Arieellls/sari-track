@@ -1,0 +1,19 @@
+{
+  "done": true,
+  "migration": {
+    "name": "mig_cvod467o1tkgc98jgs5g",
+    "operations": [
+      {
+        "drop_column": {
+          "table": "user",
+          "column": "password"
+        }
+      }
+    ]
+  },
+  "migrationType": "pgroll",
+  "name": "mig_cvod467o1tkgc98jgs5g",
+  "parent": "mig_cvocnffo1tkgc98jgs10",
+  "schema": "public",
+  "startedAt": "2025-04-05T06:47:52.832289Z"
+}

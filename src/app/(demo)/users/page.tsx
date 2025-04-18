@@ -8,8 +8,10 @@ import {
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
-  BreadcrumbSeparator
+  BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import SectionWrapper from "../_components/Wrapper";
+import { UserPage } from "../_components/user/UserPage";
 
 export default function UsersPage() {
   return (
@@ -33,7 +35,9 @@ export default function UsersPage() {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <PlaceholderContent />
+      <SectionWrapper>
+        <UserPage />
+      </SectionWrapper>
     </ContentLayout>
   );
 }

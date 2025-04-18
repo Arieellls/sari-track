@@ -117,7 +117,7 @@ export const getLowStockProducts = async () => {
       .select()
       .from(Products)
       .where(lte(Products.quantity, 10))
-      .orderBy(desc(Products.createdAt));
+      .orderBy(asc(Products.quantity)); // sort by lowest quantity first
 
     return lowStockProducts;
   } catch (error) {

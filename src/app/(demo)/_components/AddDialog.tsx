@@ -23,7 +23,7 @@ export function AddDialog() {
           Add Product
         </Button>
       </AlertDialogTrigger>
-      <AlertDialogContent className="max-w-[425px] sm:max-w-[500px] rounded-lg">
+      <AlertDialogContent className="w-96 sm:w-[500px] rounded-lg">
         <AlertDialogHeader>
           <AlertDialogTitle>Add a New Product</AlertDialogTitle>
           <AlertDialogDescription>
