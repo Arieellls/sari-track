@@ -1,35 +1,38 @@
 import { useState } from "react";
 import {
   AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
-  AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { AddProductForm } from "./inventory/AddProductForm";
+import { ScanBarcode } from "lucide-react";
+import { UpdateProductForm } from "./UpdateProductForm";
 
-export function AddDialog() {
+export function UpdateDialog() {
   const [open, setOpen] = useState(false);
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
-        <Button variant="default" onClick={() => setOpen(true)}>
-          Add Product
+        <Button
+          className="flex flex-row-reverse gap-2"
+          variant="default"
+          onClick={() => setOpen(true)}
+        >
+          Update Product
+          <ScanBarcode width={17} height={17} />
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent className="w-96 rounded-lg sm:w-[500px]">
         <AlertDialogHeader>
-          <AlertDialogTitle>Add a New Product</AlertDialogTitle>
+          <AlertDialogTitle>Update Product</AlertDialogTitle>
           <AlertDialogDescription>
-            Fill in the details below to add a new product to your inventory.
+            Modify the details below to update the product in your inventory.
           </AlertDialogDescription>
-          <AddProductForm closeDialog={() => setOpen(false)} />
+          <UpdateProductForm closeDialog={() => setOpen(false)} />
         </AlertDialogHeader>
       </AlertDialogContent>
     </AlertDialog>

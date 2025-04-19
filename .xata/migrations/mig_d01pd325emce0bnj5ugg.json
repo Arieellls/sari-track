@@ -1,0 +1,25 @@
+{
+  "done": true,
+  "migration": {
+    "name": "mig_d01pd325emce0bnj5ugg",
+    "operations": [
+      {
+        "add_column": {
+          "table": "reorder",
+          "column": {
+            "name": "status",
+            "type": "text",
+            "comment": "",
+            "default": "'pending'",
+            "nullable": true
+          }
+        }
+      }
+    ]
+  },
+  "migrationType": "pgroll",
+  "name": "mig_d01pd325emce0bnj5ugg",
+  "parent": "mig_d01pcua5emce0bnj5ufg",
+  "schema": "public",
+  "startedAt": "2025-04-19T12:26:52.420165Z"
+}

@@ -16,6 +16,7 @@ import {
 import { formatRole } from "@/lib/formatRole";
 import Image from "next/image";
 import DropDownApproval from "./DropDownApproval";
+import ImageCover from "../account/Image";
 
 export function UserPage() {
   return (
@@ -53,13 +54,29 @@ async function Users() {
             </TableCell>
 
             <TableCell className="flex w-fit font-medium">
-              <Image
-                src={user.image ?? "/user.png"}
-                alt="User Image"
-                width={24}
-                height={24}
-                className="rounded-full"
-              />
+              {user?.image?.includes("googleusercontent.com") ? (
+                <Image
+                  src={user.image}
+                  alt="User Image"
+                  width={24}
+                  height={24}
+                  className="rounded-full"
+                />
+              ) : user?.image ? (
+                <ImageCover
+                  publicId={user.image}
+                  className="rounded-full"
+                  size={24}
+                />
+              ) : (
+                <Image
+                  src="/user.png"
+                  alt="Default User Image"
+                  width={24}
+                  height={24}
+                  className="rounded-full"
+                />
+              )}
             </TableCell>
             <TableCell>{user.name}</TableCell>
             <TableCell>{user.email}</TableCell>

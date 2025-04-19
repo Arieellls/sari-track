@@ -218,6 +218,80 @@ const tables = [
     ],
   },
   {
+    name: "reorder",
+    checkConstraints: {},
+    foreignKeys: {
+      reorder_product_id_fkey: {
+        name: "reorder_product_id_fkey",
+        columns: ["product_id"],
+        referencedTable: "product",
+        referencedColumns: ["xata_id"],
+        onDelete: "NO ACTION",
+      },
+    },
+    primaryKey: ["xata_id"],
+    uniqueConstraints: {},
+    columns: [
+      {
+        name: "created_at",
+        type: "timestamp without time zone",
+        notNull: false,
+        unique: false,
+        defaultValue: "CURRENT_TIMESTAMP",
+        comment: "",
+      },
+      {
+        name: "last_reorder",
+        type: "timestamp without time zone",
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+        comment: "",
+      },
+      {
+        name: "product_id",
+        type: "link",
+        link: { table: "product" },
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+        comment: "",
+      },
+      {
+        name: "remarks",
+        type: "text",
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+        comment: "",
+      },
+      {
+        name: "status",
+        type: "text",
+        notNull: false,
+        unique: false,
+        defaultValue: "'pending'::text",
+        comment: "",
+      },
+      {
+        name: "updated_at",
+        type: "timestamp without time zone",
+        notNull: false,
+        unique: false,
+        defaultValue: "CURRENT_TIMESTAMP",
+        comment: "",
+      },
+      {
+        name: "xata_id",
+        type: "text",
+        notNull: true,
+        unique: true,
+        defaultValue: null,
+        comment: "",
+      },
+    ],
+  },
+  {
     name: "session",
     checkConstraints: {},
     foreignKeys: {
@@ -343,11 +417,27 @@ const tables = [
         comment: "",
       },
       {
+        name: "isApproved",
+        type: "bool",
+        notNull: false,
+        unique: false,
+        defaultValue: "false",
+        comment: "",
+      },
+      {
         name: "name",
         type: "text",
         notNull: true,
         unique: false,
         defaultValue: null,
+        comment: "",
+      },
+      {
+        name: "role",
+        type: "text",
+        notNull: false,
+        unique: false,
+        defaultValue: "'staff'::text",
         comment: "",
       },
       {
@@ -376,7 +466,7 @@ const tables = [
     uniqueConstraints: {},
     columns: [
       {
-        name: "createdAt",
+        name: "createdat",
         type: "datetime",
         notNull: false,
         unique: false,
@@ -395,6 +485,14 @@ const tables = [
         name: "identifier",
         type: "text",
         notNull: true,
+        unique: false,
+        defaultValue: null,
+        comment: "",
+      },
+      {
+        name: "updatedat",
+        type: "datetime",
+        notNull: false,
         unique: false,
         defaultValue: null,
         comment: "",
@@ -428,6 +526,9 @@ export type AccountRecord = Account & XataRecord;
 export type Product = InferredTypes["product"];
 export type ProductRecord = Product & XataRecord;
 
+export type Reorder = InferredTypes["reorder"];
+export type ReorderRecord = Reorder & XataRecord;
+
 export type Session = InferredTypes["session"];
 export type SessionRecord = Session & XataRecord;
 
@@ -440,6 +541,7 @@ export type VerificationRecord = Verification & XataRecord;
 export type DatabaseSchema = {
   account: AccountRecord;
   product: ProductRecord;
+  reorder: ReorderRecord;
   session: SessionRecord;
   user: UserRecord;
   verification: VerificationRecord;

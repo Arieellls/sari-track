@@ -1,0 +1,25 @@
+{
+  "done": true,
+  "migration": {
+    "name": "mig_d016dp6srhqeh7cgn5l0",
+    "operations": [
+      {
+        "add_column": {
+          "table": "user",
+          "column": {
+            "name": "role",
+            "type": "text",
+            "comment": "",
+            "default": "'staff'",
+            "nullable": true
+          }
+        }
+      }
+    ]
+  },
+  "migrationType": "pgroll",
+  "name": "mig_d016dp6srhqeh7cgn5l0",
+  "parent": "mig_d016dja5emce0bnj5nc0",
+  "schema": "public",
+  "startedAt": "2025-04-18T14:51:16.811604Z"
+}

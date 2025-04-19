@@ -1,0 +1,19 @@
+{
+  "done": true,
+  "migration": {
+    "name": "mig_d01pcua5emce0bnj5ufg",
+    "operations": [
+      {
+        "drop_column": {
+          "table": "reorder",
+          "column": "status"
+        }
+      }
+    ]
+  },
+  "migrationType": "pgroll",
+  "name": "mig_d01pcua5emce0bnj5ufg",
+  "parent": "mig_d01pc8esrhqeh7cgnalg",
+  "schema": "public",
+  "startedAt": "2025-04-19T12:26:34.190338Z"
+}

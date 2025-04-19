@@ -1,0 +1,25 @@
+{
+  "done": true,
+  "migration": {
+    "name": "mig_d015bev1875465e5aulg",
+    "operations": [
+      {
+        "add_column": {
+          "table": "user",
+          "column": {
+            "name": "isApproved",
+            "type": "bool",
+            "comment": "",
+            "default": "'false'",
+            "nullable": true
+          }
+        }
+      }
+    ]
+  },
+  "migrationType": "pgroll",
+  "name": "mig_d015bev1875465e5aulg",
+  "parent": "mig_d0147fq5emce0bnj5mbg",
+  "schema": "public",
+  "startedAt": "2025-04-18T13:38:04.530753Z"
+}

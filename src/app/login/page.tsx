@@ -84,7 +84,14 @@ export default function Login() {
             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
           </button>
         </div>
-
+        <div className="flex w-full items-center justify-between pt-2">
+          <Link
+            href="/forgot-password"
+            className="text-sm text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200"
+          >
+            Forgot password?
+          </Link>
+        </div>
         {error && <p className="mt-3 text-red-500">{error}</p>}
         <Button type="submit" className="mt-6 w-full" disabled={isPending}>
           {isPending ? <Loader2 className="animate-spin" /> : "Login"}

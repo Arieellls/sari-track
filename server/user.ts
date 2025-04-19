@@ -80,3 +80,13 @@ export const getUserDetailsByEmail = async (email: string) => {
     return null;
   }
 };
+
+export const getUserRole = async (email: string) => {
+  try {
+    const result = await db.select().from(user).where(eq(user.email, email));
+    return result[0]; // Return full user object
+  } catch (error) {
+    console.error("Error fetching user by email:", error);
+    return null;
+  }
+};

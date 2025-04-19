@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { searchProduct } from "../../_actions/getProducts";
 import { AddDialog } from "../AddDialog";
 import { ProductDialog } from "./ProductDialog";
+import { UpdateDialog } from "./UpdateDialog";
 
 interface Product {
   id: string;
@@ -116,7 +117,7 @@ export default function Products({
 
   return (
     <div className="flex min-h-[calc(100vh-56px-64px-20px-24px-56px-48px)] w-[100%] flex-col gap-8">
-      <div className="flex w-full flex-col justify-between gap-6 sm:flex-row">
+      <div className="flex w-full flex-col justify-between gap-3 sm:flex-row">
         <div className="flex w-full flex-col-reverse gap-2 sm:flex-row">
           {!searchResult && (
             <Filter
@@ -152,6 +153,7 @@ export default function Products({
           </div>
         </div>
         <AddDialog />
+        <UpdateDialog />
       </div>
 
       <div className="flex flex-col gap-2">

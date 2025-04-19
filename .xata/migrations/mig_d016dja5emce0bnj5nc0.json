@@ -1,0 +1,19 @@
+{
+  "done": true,
+  "migration": {
+    "name": "mig_d016dja5emce0bnj5nc0",
+    "operations": [
+      {
+        "drop_column": {
+          "table": "user",
+          "column": "role"
+        }
+      }
+    ]
+  },
+  "migrationType": "pgroll",
+  "name": "mig_d016dja5emce0bnj5nc0",
+  "parent": "mig_d015bev1875465e5aulg",
+  "schema": "public",
+  "startedAt": "2025-04-18T14:50:54.573679Z"
+}

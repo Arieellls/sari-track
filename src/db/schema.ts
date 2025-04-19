@@ -9,6 +9,7 @@ import {
   integer,
   timestamp,
 } from "drizzle-orm/pg-core";
+import { produce } from "immer";
 import { z } from "zod";
 
 export const Products = pgTable("product", {
@@ -19,6 +20,16 @@ export const Products = pgTable("product", {
   expiresAt: timestamp("expiresat"),
   createdAt: timestamp("xata_createdat").defaultNow(),
   updatedAt: timestamp("xata_updatedat").defaultNow(),
+});
+
+export const reorder = pgTable("reorder", {
+  id: text("xata_id").primaryKey(),
+  productId: text("product_id").references(() => Products.id),
+  status: varchar("status", { length: 20 }).default("pending"),
+  remarks: text("remarks"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+  lastReorder: timestamp("last_reorder"),
 });
 
 // export const User = pgTable("user", {

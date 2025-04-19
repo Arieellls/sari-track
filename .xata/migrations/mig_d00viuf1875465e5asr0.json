@@ -1,0 +1,20 @@
+{
+  "done": true,
+  "migration": {
+    "name": "mig_d00viuf1875465e5asr0",
+    "operations": [
+      {
+        "alter_column": {
+          "name": "createdat",
+          "table": "verification",
+          "column": "createdAt"
+        }
+      }
+    ]
+  },
+  "migrationType": "pgroll",
+  "name": "mig_d00viuf1875465e5asr0",
+  "parent": "mig_d00viemsrhqeh7cgn3u0",
+  "schema": "public",
+  "startedAt": "2025-04-18T07:04:26.624958Z"
+}

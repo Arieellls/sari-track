@@ -1,0 +1,20 @@
+{
+  "done": true,
+  "migration": {
+    "name": "mig_d01pc8esrhqeh7cgnalg",
+    "operations": [
+      {
+        "drop_column": {
+          "down": "0",
+          "table": "reorder",
+          "column": "request_quantity"
+        }
+      }
+    ]
+  },
+  "migrationType": "pgroll",
+  "name": "mig_d01pc8esrhqeh7cgnalg",
+  "parent": "sql_a00e6c3d7267d4",
+  "schema": "public",
+  "startedAt": "2025-04-19T12:25:05.922717Z"
+}

@@ -16,6 +16,7 @@ import {
 } from "drizzle-orm/expressions";
 import { sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import axios from "axios";
 
 const xata: XataHttpClient = getXataClient() as unknown as XataHttpClient;
 const db = drizzle(xata);
@@ -89,6 +90,51 @@ export const changeUserRole = async (userId: string, newRole: string) => {
     return true;
   } catch (error) {
     console.error(`Error changing role for user ${userId}:`, error);
+    return false;
+  }
+};
+
+export const uploadToCloudinary = async (file: File): Promise<string> => {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", "fgynascv");
+  formData.append("folder", "sari-track");
+
+  const response = await axios.post(
+    `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
+    formData,
+  );
+
+  return response.data.secure_url;
+};
+
+export const updateUserInfo = async (
+  userId: string,
+  newEmail: string,
+  newName: string,
+  newImage?: string | null,
+) => {
+  try {
+    const updateData: { email: string; name: string; image?: string } = {
+      email: newEmail,
+      name: newName,
+    };
+
+    if (newImage !== undefined) {
+      if (newImage !== null) {
+        updateData.image = newImage;
+      }
+    }
+
+    await db.update(user).set(updateData).where(eq(user.id, userId));
+
+    console.log(
+      `User ${userId} updated successfully: email=${newEmail}, name=${newName}, image=${newImage ? "updated" : "unchanged"}`,
+    );
+    revalidatePath("/users");
+    return true;
+  } catch (error) {
+    console.error(`Error updating user ${userId}:`, error);
     return false;
   }
 };

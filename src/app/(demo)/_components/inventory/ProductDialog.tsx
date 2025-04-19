@@ -8,7 +8,7 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle
+  AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,7 +18,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage
+  FormMessage,
 } from "@/components/ui/form";
 import { formatDate } from "@/lib/formatDate";
 import { z } from "zod";
@@ -41,10 +41,10 @@ type ProductDialogProps = {
 
 const formSchema = z.object({
   productName: z.string().min(2, {
-    message: "Product name must be at least 2 characters."
+    message: "Product name must be at least 2 characters.",
   }),
   barcode: z.string().min(1, {
-    message: "Barcode is required."
+    message: "Barcode is required.",
   }),
   // You could add additional validation like:
   // .regex(/^[0-9]{12,13}$/, {
@@ -53,23 +53,23 @@ const formSchema = z.object({
   quantity: z.coerce
     .number()
     .min(1, {
-      message: "Quantity must be at least 1."
+      message: "Quantity must be at least 1.",
     })
     .max(1000, {
-      message: "Quantity must be at most 1000."
+      message: "Quantity must be at most 1000.",
     }),
   expirationDate: z.string().min(1, {
-    message: "Expiration date is required."
+    message: "Expiration date is required.",
   }),
   expirationDateNew: z.string().min(1, {
-    message: "Expiration date is required."
-  })
+    message: "Expiration date is required.",
+  }),
 });
 
 export function ProductDialog({
   isOpen,
   onOpenChange,
-  product
+  product,
 }: ProductDialogProps) {
   const [mode, setMode] = useState<"view" | "edit" | "add">("view");
   const [loading, setLoading] = useState(false);
@@ -80,29 +80,32 @@ export function ProductDialog({
       productName: product?.name || "",
       barcode: product?.barcode || "",
       quantity: product?.quantity || 1,
-      expirationDate: product?.expiresAt ? formatDate(product.expiresAt) : "",
-      expirationDateNew: ""
-    }
+      expirationDate: product?.expiresAt
+        ? new Date(product.expiresAt).toISOString().split("T")[0]
+        : "",
+      expirationDateNew: "",
+    },
   });
 
   const title =
     mode === "add"
       ? "Add a New Product"
       : mode === "edit"
-      ? `Edit ${product?.name}`
-      : `Product: ${product?.name}`;
+        ? `Edit ${product?.name}`
+        : `Product: ${product?.name}`;
 
   const description =
     mode === "add"
       ? "Fill in the details below to add a new product to your inventory."
       : mode === "edit"
-      ? "Update the product details below."
-      : "View product details below.";
+        ? "Update the product details below."
+        : "View product details below.";
 
-  const onEdit = () => {
+  const onEdit = (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent form submission
+    e.stopPropagation(); // Stop event bubbling
     console.log("Edit button clicked");
     setMode("edit");
-    console.log(mode);
   };
 
   useEffect(() => {
@@ -113,12 +116,16 @@ export function ProductDialog({
 
   useEffect(() => {
     if (product) {
+      const formattedDate = product.expiresAt
+        ? new Date(product.expiresAt).toISOString().split("T")[0]
+        : "";
+
       form.reset({
         productName: product.name || "",
         barcode: product.barcode || "",
         quantity: product.quantity || 1,
-        expirationDate: formatDate(product.expiresAt) || "",
-        expirationDateNew: ""
+        expirationDate: formattedDate,
+        expirationDateNew: formattedDate, // Set the same date for both fields
       });
     }
   }, [product, form]);
@@ -135,7 +142,7 @@ export function ProductDialog({
         newBarcode: data.barcode,
         productName: data.productName,
         quantity: data.quantity,
-        expirationDate: data.expirationDateNew || data.expirationDate
+        expirationDate: data.expirationDateNew || data.expirationDate,
       });
 
       setLoading(false); // Re-enable the button after response
@@ -147,7 +154,7 @@ export function ProductDialog({
 
       toast({
         title: "Product Updated",
-        description: `${data.productName} updated successfully.`
+        description: `${data.productName} updated successfully.`,
       });
 
       onOpenChange(false);
@@ -168,7 +175,7 @@ export function ProductDialog({
 
       toast({
         title: "Product Deleted",
-        description: `${product.name} deleted successfully.`
+        description: `${product.name} deleted successfully.`,
       });
 
       onOpenChange(false);
@@ -177,7 +184,7 @@ export function ProductDialog({
 
   return (
     <AlertDialog open={isOpen} onOpenChange={onOpenChange}>
-      <AlertDialogContent className="max-w-[425px] sm:max-w-[500px] rounded-lg">
+      <AlertDialogContent className="w-96 rounded-lg sm:max-w-[500px]">
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription>{description}</AlertDialogDescription>
@@ -273,9 +280,13 @@ export function ProductDialog({
 
             <AlertDialogFooter>
               {mode === "view" ? (
-                <div className="flex justify-between mt-3 flex-row-reverse w-full gap-2">
-                  <div className="flex gap-2">
-                    <AlertDialogCancel disabled={loading} onClick={onClose}>
+                <div className="mt-3 flex w-full flex-row-reverse justify-between gap-2">
+                  <div className="flex items-center justify-center gap-2">
+                    <AlertDialogCancel
+                      className="m-0"
+                      disabled={loading}
+                      onClick={onClose}
+                    >
                       Close
                     </AlertDialogCancel>
                     <Button type="button" disabled={loading} onClick={onEdit}>
@@ -285,17 +296,17 @@ export function ProductDialog({
                   <DeleteDialog onDelete={onDelete} loading={loading} />
                 </div>
               ) : (
-                <div className="flex justify-end mt-3 w-full">
+                <div className="mt-3 flex w-full justify-end">
                   <div className="flex gap-2">
-                    <AlertDialogCancel disabled={loading}>
+                    <AlertDialogCancel className="m-0" disabled={loading}>
                       Cancel
                     </AlertDialogCancel>
                     <Button type="submit" disabled={loading}>
                       {loading
                         ? "Updating..."
                         : mode === "edit"
-                        ? "Save Changes"
-                        : "Add Product"}
+                          ? "Save Changes"
+                          : "Add Product"}
                     </Button>
                   </div>
                 </div>
