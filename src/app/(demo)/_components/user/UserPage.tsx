@@ -17,21 +17,28 @@ import { formatRole } from "@/lib/formatRole";
 import Image from "next/image";
 import DropDownApproval from "./DropDownApproval";
 import ImageCover from "../account/Image";
+import { useUserStore } from "@/hooks/useUserStore";
+import { getUser, getUserRole } from "../../../../../server/user";
 
-export function UserPage() {
+export async function UserPage() {
+  const fetchedUser = await getUser();
+  const userDetails = await getUserRole(fetchedUser?.email ?? "");
+  const role = userDetails?.role ?? "";
+
   return (
     <div className="flex w-full flex-col gap-4">
       <h2 className="text-xl font-semibold">Registered Users</h2>
-      <Users />
+      <Users role={role} />
 
       <h2 className="mt-5 text-xl font-semibold">Pending Approvals</h2>
-      <UsersNeedsApproval />
+      <UsersNeedsApproval role={role} />
     </div>
   );
 }
 
-async function Users() {
+async function Users({ role }: { role: string }) {
   const users = await getAllUsers();
+
   return (
     <Table>
       {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
@@ -49,9 +56,11 @@ async function Users() {
         {users.map((user) => (
           <TableRow key={user.id}>
             {/* Mobile actions */}
-            <TableCell className="text-center sm:hidden">
-              <DropDownUsers id={user.id} userPosition={user.role} />
-            </TableCell>
+            {(role === "admin" || role === "owner") && (
+              <TableCell className="text-center sm:hidden">
+                <DropDownUsers id={user.id} userPosition={user.role} />
+              </TableCell>
+            )}
 
             <TableCell className="flex w-fit font-medium">
               {user?.image?.includes("googleusercontent.com") ? (
@@ -81,9 +90,11 @@ async function Users() {
             <TableCell>{user.name}</TableCell>
             <TableCell>{user.email}</TableCell>
             <TableCell className="w-fit">{formatRole(user.role)}</TableCell>
-            <TableCell className="hidden text-center sm:table-cell">
-              <DropDownUsers id={user.id} userPosition={user.role} />
-            </TableCell>
+            {(role === "admin" || role === "owner") && (
+              <TableCell className="hidden text-center sm:table-cell">
+                <DropDownUsers id={user.id} userPosition={user.role} />
+              </TableCell>
+            )}
           </TableRow>
         ))}
       </TableBody>
@@ -97,13 +108,8 @@ async function Users() {
   );
 }
 
-async function UsersNeedsApproval() {
+async function UsersNeedsApproval({ role }: { role: string }) {
   const users = await getAllUsersNeedsApproval();
-
-  const onRespond = async (id: string) => {
-    // Handle the approval or rejection of the user here
-    console.log(`User ID: ${id}`);
-  };
 
   return (
     <Table>
@@ -122,9 +128,11 @@ async function UsersNeedsApproval() {
         {users.map((user) => (
           <TableRow key={user.id}>
             {/* Mobile actions */}
-            <TableCell className="text-center sm:hidden">
-              <DropDownApproval id={user.id} />
-            </TableCell>
+            {(role === "admin" || role === "owner") && (
+              <TableCell className="text-center sm:hidden">
+                <DropDownApproval id={user.id} />
+              </TableCell>
+            )}
 
             <TableCell className="flex w-fit font-medium">
               <Image
@@ -138,9 +146,11 @@ async function UsersNeedsApproval() {
             <TableCell>{user.name}</TableCell>
             <TableCell>{user.email}</TableCell>
             <TableCell className="w-fit">{formatRole(user.role)}</TableCell>
-            <TableCell className="hidden text-center sm:table-cell">
-              <DropDownApproval id={user.id} />
-            </TableCell>
+            {(role === "admin" || role === "owner") && (
+              <TableCell className="hidden text-center sm:table-cell">
+                <DropDownApproval id={user.id} />
+              </TableCell>
+            )}
           </TableRow>
         ))}
       </TableBody>

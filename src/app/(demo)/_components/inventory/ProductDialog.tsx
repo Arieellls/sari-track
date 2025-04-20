@@ -39,6 +39,14 @@ type ProductDialogProps = {
   };
 };
 
+type FormData = {
+  productName: string;
+  barcode: string;
+  quantity: number;
+  expirationDate: string;
+  expirationDateNew: string;
+};
+
 const formSchema = z.object({
   productName: z.string().min(2, {
     message: "Product name must be at least 2 characters.",
@@ -131,7 +139,7 @@ export function ProductDialog({
     form.reset();
   };
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: FormData) => {
     if (mode === "edit" && product?.barcode) {
       setLoading(true);
 

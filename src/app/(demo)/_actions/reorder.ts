@@ -14,6 +14,7 @@ import {
   eq,
   lt,
   like,
+  gte,
 } from "drizzle-orm/expressions";
 import { sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
@@ -104,6 +105,71 @@ export const getReorderHistory = async () => {
     return requests;
   } catch (error) {
     console.error("Error fetching reorder history:", error);
+    return [];
+  }
+};
+
+export const bestSellingProduct = async () => {
+  try {
+    const oneMonthAgo = new Date();
+    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+
+    const bestSellers = await db
+      .select({
+        reorderId: reorder.id,
+        productId: reorder.productId,
+        status: reorder.status,
+        remarks: reorder.remarks,
+        createdAt: reorder.createdAt,
+        updatedAt: reorder.updatedAt,
+        lastReorder: reorder.lastReorder,
+        productName: Products.name,
+        reorderCount: reorder.reorder_count,
+      })
+      .from(reorder)
+      .leftJoin(Products, eq(reorder.productId, Products.id))
+      .where(
+        and(
+          gte(reorder.reorder_count, 3),
+          gte(reorder.lastReorder, oneMonthAgo),
+        ),
+      )
+      .orderBy(desc(reorder.createdAt));
+
+    return bestSellers;
+  } catch (error) {
+    console.error("Error fetching best selling products:", error);
+    return [];
+  }
+};
+
+export const slowMovingProduct = async () => {
+  try {
+    const oneMonthAgo = new Date();
+    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+
+    const slowMovers = await db
+      .select({
+        reorderId: reorder.id,
+        productId: reorder.productId,
+        status: reorder.status,
+        remarks: reorder.remarks,
+        createdAt: reorder.createdAt,
+        updatedAt: reorder.updatedAt,
+        lastReorder: reorder.lastReorder,
+        productName: Products.name,
+        reorderCount: reorder.reorder_count,
+      })
+      .from(reorder)
+      .leftJoin(Products, eq(reorder.productId, Products.id))
+      .where(
+        and(lt(reorder.reorder_count, 3), lt(reorder.lastReorder, oneMonthAgo)),
+      )
+      .orderBy(desc(reorder.createdAt));
+
+    return slowMovers;
+  } catch (error) {
+    console.error("Error fetching slow moving products:", error);
     return [];
   }
 };
