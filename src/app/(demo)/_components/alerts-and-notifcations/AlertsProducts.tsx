@@ -4,9 +4,11 @@ import { useState, useMemo } from "react";
 import ProductTile from "../inventory/ProductTile";
 import {
   ArrowUpDown,
+  CheckCircle,
   ChevronDown,
   ChevronUp,
   ExternalLink,
+  History,
 } from "lucide-react";
 import Link from "next/link";
 import AutomatedSuggestions from "./AutomatedSuggestions";
@@ -21,15 +23,29 @@ interface Product {
   updatedAt?: Date | null;
 }
 
+type ReorderInfo = {
+  reorderId: string;
+  productId: string | null;
+  status: string | null;
+  remarks: string | null;
+  createdAt: string | Date | null;
+  updatedAt: string | Date | null;
+  lastReorder: string | Date | null;
+  productName: string | null;
+};
+
 interface ProductsProps {
   productsNearExpiration: Product[];
   lowStockProducts: Product[];
   reorderData: any[];
+  reorderDataHistory: ReorderInfo[];
 }
 
 export default function AlertsProducts({
   productsNearExpiration = [],
   lowStockProducts = [],
+  reorderData = [],
+  reorderDataHistory = [],
 }: ProductsProps) {
   const [sortAscending, setSortAscending] = useState(true);
 
@@ -38,6 +54,7 @@ export default function AlertsProducts({
     lowStock: { expanded: true, showAll: false },
     expiry: { expanded: true, showAll: false },
     reorder: { expanded: true, showAll: false },
+    history: { expanded: false, showAll: false },
   });
 
   // Number of products to show initially
@@ -55,14 +72,18 @@ export default function AlertsProducts({
     setSortAscending((prev) => !prev);
   };
 
-  const toggleSection = (section: "lowStock" | "expiry" | "reorder") => {
+  const toggleSection = (
+    section: "lowStock" | "expiry" | "reorder" | "history",
+  ) => {
     setSectionStates((prev) => ({
       ...prev,
       [section]: { ...prev[section], expanded: !prev[section].expanded },
     }));
   };
 
-  const toggleShowAll = (section: "lowStock" | "expiry" | "reorder") => {
+  const toggleShowAll = (
+    section: "lowStock" | "expiry" | "reorder" | "history",
+  ) => {
     setSectionStates((prev) => ({
       ...prev,
       [section]: { ...prev[section], showAll: !prev[section].showAll },
@@ -79,14 +100,18 @@ export default function AlertsProducts({
     : sortedProductsNearExpiration.slice(0, INITIAL_DISPLAY_COUNT);
 
   const displayReorderProducts = sectionStates.reorder.showAll
-    ? lowStockProducts
-    : lowStockProducts.slice(0, INITIAL_DISPLAY_COUNT);
+    ? reorderData
+    : reorderData.slice(0, INITIAL_DISPLAY_COUNT);
+
+  const displayReorderHistory = sectionStates.history.showAll
+    ? reorderDataHistory
+    : reorderDataHistory.slice(0, INITIAL_DISPLAY_COUNT);
 
   return (
     <div className="flex min-h-[calc(100vh-56px-64px-20px-24px-56px-48px)] w-full flex-col gap-8">
       {/* Reorder Suggestions Section */}
       <div className="flex flex-col gap-4">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col items-center justify-between gap-1 sm:flex-row">
           <h1 className="flex items-center gap-3 text-2xl font-bold">
             Automated Reordering Suggestions
             <button
@@ -100,12 +125,90 @@ export default function AlertsProducts({
               )}
             </button>
           </h1>
+          <button
+            onClick={() => toggleSection("history")}
+            className="flex items-center gap-2 self-end rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+          >
+            <History size={16} />
+            <span className="hidden sm:flex">Response History</span>
+          </button>
         </div>
 
-        {sectionStates.lowStock.expanded && (
+        {/* Response History Section */}
+        <div className="flex flex-col gap-4">
+          {sectionStates.history.expanded && (
+            <>
+              <div className="flex w-full flex-col gap-4">
+                {reorderDataHistory.length > 0 ? (
+                  displayReorderHistory.map((product) => (
+                    <AutomatedSuggestions
+                      key={product.productId}
+                      product={{
+                        id: product.productId ?? "",
+                        name: product.productName,
+                        remarks: product.remarks,
+                        lastReorder: product.lastReorder
+                          ? typeof product.lastReorder === "string"
+                            ? new Date(product.lastReorder)
+                            : product.lastReorder
+                          : null,
+                        quantity: null,
+                        barcode: null,
+                        expiresAt: null,
+                        createdAt: product.createdAt
+                          ? new Date(product.createdAt)
+                          : null,
+                        updatedAt: product.updatedAt
+                          ? new Date(product.updatedAt)
+                          : null,
+                      }}
+                      status={
+                        product.status as "pending" | "accepted" | "declined"
+                      }
+                    />
+                  ))
+                ) : (
+                  <p className="text-gray-500">
+                    No response history available.
+                  </p>
+                )}
+
+                {!sectionStates.history.showAll &&
+                  reorderDataHistory.length > INITIAL_DISPLAY_COUNT && (
+                    <div
+                      onClick={() => toggleShowAll("history")}
+                      className="flex w-full cursor-pointer overflow-hidden rounded border border-gray-200 bg-white shadow-sm transition-shadow duration-200 hover:shadow dark:border-gray-700 dark:bg-gray-800 dark:shadow-md dark:hover:shadow-lg"
+                    >
+                      <div className="flex flex-1 items-center justify-center p-4">
+                        <p className="font-medium text-gray-900 dark:text-gray-100">
+                          See{" "}
+                          {reorderDataHistory.length - INITIAL_DISPLAY_COUNT}{" "}
+                          more items
+                        </p>
+                      </div>
+                    </div>
+                  )}
+              </div>
+
+              {sectionStates.history.showAll &&
+                reorderDataHistory.length > INITIAL_DISPLAY_COUNT && (
+                  <button
+                    onClick={() => toggleShowAll("history")}
+                    className="self-start pl-3 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-900"
+                  >
+                    Show less
+                  </button>
+                )}
+            </>
+          )}
+        </div>
+
+        {sectionStates.reorder.expanded && (
           <>
-            <div className="flex w-full flex-col gap-4 sm:flex-row sm:flex-wrap">
-              {lowStockProducts.length > 0 ? (
+            <div
+              className={`flex w-full flex-col gap-4 sm:flex-row sm:flex-wrap ${sectionStates.history.expanded ? "mt-8 border-t border-gray-200 pt-4" : ""}`}
+            >
+              {reorderData.length > 0 ? (
                 displayReorderProducts.map((product) => (
                   <AutomatedSuggestions
                     key={product.id}
@@ -114,19 +217,19 @@ export default function AlertsProducts({
                   />
                 ))
               ) : (
-                <p className="text-gray-500">No low stock items.</p>
+                <p className="text-gray-500">No reordering suggestions.</p>
               )}
 
               {!sectionStates.reorder.showAll &&
-                lowStockProducts.length > INITIAL_DISPLAY_COUNT && (
+                reorderData.length > INITIAL_DISPLAY_COUNT && (
                   <div
                     onClick={() => toggleShowAll("reorder")}
                     className="flex w-full cursor-pointer overflow-hidden rounded border border-gray-200 bg-white shadow-sm transition-shadow duration-200 hover:shadow dark:border-gray-700 dark:bg-gray-800 dark:shadow-md dark:hover:shadow-lg"
                   >
                     <div className="flex flex-1 items-center justify-center p-4">
                       <p className="font-medium text-gray-900 dark:text-gray-100">
-                        See {lowStockProducts.length - INITIAL_DISPLAY_COUNT}{" "}
-                        more items
+                        See {reorderData.length - INITIAL_DISPLAY_COUNT} more
+                        items
                       </p>
                     </div>
                   </div>
@@ -134,7 +237,7 @@ export default function AlertsProducts({
             </div>
 
             {sectionStates.reorder.showAll &&
-              lowStockProducts.length > INITIAL_DISPLAY_COUNT && (
+              reorderData.length > INITIAL_DISPLAY_COUNT && (
                 <button
                   onClick={() => toggleShowAll("reorder")}
                   className="self-start pl-3 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-900"
@@ -162,66 +265,58 @@ export default function AlertsProducts({
               )}
             </button>
           </h1>
-          {/* {lowStockProducts.length > INITIAL_DISPLAY_COUNT && (
-            <Link
-              href="/inventory"
-              className="flex items-center gap-1 text-blue-600 hover:text-blue-800"
-            >
-              View All <ExternalLink size={16} />
-            </Link>
-          )} */}
         </div>
-
-        {sectionStates.lowStock.expanded && (
-          <>
-            <div className="flex w-full flex-col gap-4 sm:flex-row sm:flex-wrap">
-              {lowStockProducts.length > 0 ? (
-                displayLowStockProducts.map((product) => (
-                  <ProductTile
-                    key={product.id}
-                    id={product.id}
-                    barcode={product.barcode || ""}
-                    name={product.name || "Unknown Product"}
-                    quantity={product.quantity || 0}
-                    expires={
-                      product.expiresAt
-                        ? product.expiresAt.toISOString()
-                        : "No Expiry Date"
-                    }
-                    destructive={true}
-                    section="low-stock"
-                  />
-                ))
-              ) : (
-                <p className="text-gray-500">No low stock items.</p>
-              )}
-
-              {!sectionStates.lowStock.showAll &&
-                lowStockProducts.length > INITIAL_DISPLAY_COUNT && (
-                  <div
-                    onClick={() => toggleShowAll("lowStock")}
-                    className="flex h-40 w-full cursor-pointer items-center justify-center rounded-lg border bg-slate-300 p-4 hover:bg-gray-400 hover:text-gray-50 dark:bg-gray-400 dark:hover:bg-gray-300 sm:w-64"
-                  >
-                    <p className="font-medium">
-                      See {lowStockProducts.length - INITIAL_DISPLAY_COUNT} more
-                      items
-                    </p>
-                  </div>
-                )}
-            </div>
-
-            {sectionStates.lowStock.showAll &&
-              lowStockProducts.length > INITIAL_DISPLAY_COUNT && (
-                <button
-                  onClick={() => toggleShowAll("lowStock")}
-                  className="self-start pl-3 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-900"
-                >
-                  Show less
-                </button>
-              )}
-          </>
-        )}
       </div>
+
+      {sectionStates.lowStock.expanded && (
+        <>
+          <div className="flex w-full flex-col gap-4 sm:flex-row sm:flex-wrap">
+            {lowStockProducts.length > 0 ? (
+              displayLowStockProducts.map((product) => (
+                <ProductTile
+                  key={product.id}
+                  id={product.id}
+                  barcode={product.barcode || ""}
+                  name={product.name || "Unknown Product"}
+                  quantity={product.quantity || 0}
+                  expires={
+                    product.expiresAt
+                      ? product.expiresAt.toISOString()
+                      : "No Expiry Date"
+                  }
+                  destructive={true}
+                  section="low-stock"
+                />
+              ))
+            ) : (
+              <p className="text-gray-500">No low stock items.</p>
+            )}
+
+            {!sectionStates.lowStock.showAll &&
+              lowStockProducts.length > INITIAL_DISPLAY_COUNT && (
+                <div
+                  onClick={() => toggleShowAll("lowStock")}
+                  className="flex h-40 w-full cursor-pointer items-center justify-center rounded-lg border bg-slate-300 p-4 hover:bg-gray-400 hover:text-gray-50 dark:bg-gray-400 dark:hover:bg-gray-300 sm:w-64"
+                >
+                  <p className="font-medium">
+                    See {lowStockProducts.length - INITIAL_DISPLAY_COUNT} more
+                    items
+                  </p>
+                </div>
+              )}
+          </div>
+
+          {sectionStates.lowStock.showAll &&
+            lowStockProducts.length > INITIAL_DISPLAY_COUNT && (
+              <button
+                onClick={() => toggleShowAll("lowStock")}
+                className="self-start pl-3 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-900"
+              >
+                Show less
+              </button>
+            )}
+        </>
+      )}
 
       {/* Items Approaching Expiry Section */}
       <div className="flex flex-col gap-4">
@@ -243,14 +338,6 @@ export default function AlertsProducts({
               )}
             </button>
           </h1>
-          {/* {sortedProductsNearExpiration.length > INITIAL_DISPLAY_COUNT && (
-            <Link
-              href="/inventory?filter=expiring"
-              className="flex items-center gap-1 text-blue-600 hover:text-blue-800"
-            >
-              View All <ExternalLink size={16} />
-            </Link>
-          )} */}
         </div>
 
         {sectionStates.expiry.expanded && (

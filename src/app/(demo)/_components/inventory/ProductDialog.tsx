@@ -46,10 +46,7 @@ const formSchema = z.object({
   barcode: z.string().min(1, {
     message: "Barcode is required.",
   }),
-  // You could add additional validation like:
-  // .regex(/^[0-9]{12,13}$/, {
-  //   message: "Barcode must be 12-13 digits."
-  // })
+
   quantity: z.coerce
     .number()
     .min(1, {
@@ -102,8 +99,8 @@ export function ProductDialog({
         : "View product details below.";
 
   const onEdit = (e: React.MouseEvent) => {
-    e.preventDefault(); // Prevent form submission
-    e.stopPropagation(); // Stop event bubbling
+    e.preventDefault();
+    e.stopPropagation();
     console.log("Edit button clicked");
     setMode("edit");
   };
@@ -125,7 +122,7 @@ export function ProductDialog({
         barcode: product.barcode || "",
         quantity: product.quantity || 1,
         expirationDate: formattedDate,
-        expirationDateNew: formattedDate, // Set the same date for both fields
+        expirationDateNew: formattedDate,
       });
     }
   }, [product, form]);
@@ -136,7 +133,7 @@ export function ProductDialog({
 
   const onSubmit = async (data: any) => {
     if (mode === "edit" && product?.barcode) {
-      setLoading(true); // Disable the button and show "Updating..."
+      setLoading(true);
 
       const response = await updateProduct(product.id, product.barcode, {
         newBarcode: data.barcode,
@@ -145,7 +142,7 @@ export function ProductDialog({
         expirationDate: data.expirationDateNew || data.expirationDate,
       });
 
-      setLoading(false); // Re-enable the button after response
+      setLoading(false);
 
       if (response.error) {
         console.error("Update failed:", response.message);
@@ -166,7 +163,7 @@ export function ProductDialog({
     if (product?.id) {
       const response = await deleteProduct(product.id);
 
-      setLoading(false); // Re-enable the button after response
+      setLoading(false);
 
       if (response.error) {
         console.error("Delete failed:", response.message);

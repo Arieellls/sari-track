@@ -1,6 +1,8 @@
 import { AlertCircle, Check, X, ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
 import { AcceptDialog } from "./AcceptDialog";
+import { DeclineDialog } from "./DeclineDiaglog";
+import { formatDate } from "@/lib/formatDate";
 
 // export default function AutomatedSuggestions() {
 //   return (
@@ -19,6 +21,8 @@ interface Product {
   expiresAt?: Date | null;
   createdAt?: Date | null;
   updatedAt?: Date | null;
+  remarks?: string | null;
+  lastReorder?: Date | null;
 }
 
 export default function AutomatedSuggestions({
@@ -80,21 +84,26 @@ export default function AutomatedSuggestions({
           </div>
         </div>
 
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-3">
           <p className="text-sm text-gray-600 dark:text-gray-300">
             Inventory is below threshold levels.
           </p>
 
-          <div className="flex items-center gap-6">
-            <span className="text-sm text-gray-500 dark:text-gray-400">
-              Current quantity:{" "}
-              <span className="font-medium text-gray-900 dark:text-gray-200">
-                {product.quantity}
+          <div className="flex flex-wrap items-center gap-6">
+            {product.quantity && (
+              <span className="text-sm text-gray-500 dark:text-gray-400">
+                Current quantity:{" "}
+                <span className="font-medium text-gray-900 dark:text-gray-200">
+                  {product.quantity}
+                </span>
               </span>
-            </span>
-            <span className="text-xs text-gray-400 dark:text-gray-500">
-              Last re-order: hahahaha
-            </span>
+            )}
+            {product.lastReorder && (
+              <span className="w-full text-xs text-gray-400 dark:text-gray-500 sm:w-auto">
+                Last re-order:{" "}
+                {formatDate(product.lastReorder.toLocaleDateString())}
+              </span>
+            )}
           </div>
         </div>
 
@@ -119,20 +128,23 @@ export default function AutomatedSuggestions({
 
         {showRemarksToggle && isRemarksOpen && (
           <div className="mt-2 rounded-md bg-gray-50 p-3 text-sm text-gray-600 dark:bg-gray-700/50 dark:text-gray-300">
-            <p>{remarks}</p>
+            <p>{product.remarks}</p>
           </div>
         )}
 
         {status === "pending" && (
           <div className="mt-3 flex justify-end gap-3">
-            <AcceptDialog>
+            <AcceptDialog product={product}>
               <button className="rounded border border-emerald-500 px-6 py-1 text-sm text-emerald-500 transition-colors hover:bg-emerald-50 dark:hover:bg-emerald-900/30">
                 Accept
               </button>
             </AcceptDialog>
-            <button className="rounded border border-rose-500 px-6 py-1 text-sm text-rose-500 transition-colors hover:bg-rose-50 dark:hover:bg-rose-900/30">
-              Decline
-            </button>
+            <DeclineDialog
+              product={product}
+              className="rounded border border-rose-500 px-6 py-1 text-sm text-rose-500 transition-colors hover:bg-rose-50 dark:hover:bg-rose-900/30"
+            >
+              <button>Decline</button>
+            </DeclineDialog>
           </div>
         )}
       </div>

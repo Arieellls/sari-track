@@ -14,6 +14,7 @@ import {
   eq,
   lt,
   like,
+  notInArray,
 } from "drizzle-orm/expressions";
 import { sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
@@ -129,23 +130,13 @@ export const getLowStockProducts = async () => {
 
 export const getReorderData = async () => {
   try {
-    const reorderData = await db
-      .select({
-        reorderId: reorder.id,
-        productId: Products.id,
-        status: reorder.status,
-        remarks: reorder.remarks,
-        lastReorder: reorder.lastReorder,
-        productName: Products.name,
-        quantity: Products.quantity,
-        barcode: Products.barcode,
-      })
+    const lowStockProducts = await db
+      .select()
       .from(Products)
-      .innerJoin(reorder, eq(Products.id, reorder.productId))
-      .where(lt(Products.quantity, 10)) // 🔍 Low stock only
-      .orderBy(asc(Products.quantity)); // 🔃 Sorted from lowest up to 10
+      .where(and(lte(Products.quantity, 10), eq(Products.quantityNotif, true)))
+      .orderBy(asc(Products.quantity)); // sort by lowest quantity first
 
-    return reorderData;
+    return lowStockProducts;
   } catch (error) {
     console.error("Error fetching low stock products:", error);
     return [];
@@ -164,11 +155,11 @@ export const updateProductQuantity = async (
   try {
     await db
       .update(Products)
-      .set({ quantity: newQuantity })
+      .set({ quantity: newQuantity, quantityNotif: false })
       .where(eq(Products.id, productId));
 
     console.log(`Updated product ${productId} quantity to ${newQuantity}`);
-    revalidatePath("/alerts-and-notifications"); // Revalidate the inventory page to reflect changes
+    revalidatePath("/alerts-and-notifications");
     revalidatePath("/inventory");
     return { success: true };
   } catch (error) {

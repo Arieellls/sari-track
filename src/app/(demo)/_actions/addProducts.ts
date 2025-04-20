@@ -12,7 +12,7 @@ import {
   lte,
   gt,
   eq,
-  like
+  like,
 } from "drizzle-orm/expressions";
 import { sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
@@ -39,7 +39,7 @@ export const addProduct = async (productData: {
       // Create a custom error object with a specific type
       return {
         error: "DUPLICATE_BARCODE",
-        message: "A product with this barcode already exists"
+        message: "A product with this barcode already exists",
       };
     }
 
@@ -51,9 +51,10 @@ export const addProduct = async (productData: {
         name: productData.productName,
         barcode: productData.barcode,
         quantity: productData.quantity,
+        quantityNotif: true,
         expiresAt: new Date(productData.expirationDate),
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       })
       .returning();
 
@@ -74,7 +75,7 @@ export const updateProduct = async (
     quantity?: number;
     expirationDate?: string;
     newBarcode?: string;
-  }
+  },
 ) => {
   try {
     // Check if the product exists
@@ -87,21 +88,29 @@ export const updateProduct = async (
     if (existingProduct.length === 0) {
       return {
         error: "NOT_FOUND",
-        message: "No product found"
+        message: "No product found",
       };
     }
+
+    // Determine the updated quantity (use existing if not provided)
+    const updatedQuantity =
+      updatedData.quantity ?? existingProduct[0].quantity ?? 0;
+
+    // Set quantityNotif based on the updated quantity
+    const quantityNotif = updatedQuantity < 10;
 
     // Update the product details
     const result = await db
       .update(Products)
       .set({
         name: updatedData.productName || existingProduct[0].name,
-        quantity: updatedData.quantity ?? existingProduct[0].quantity,
+        quantity: updatedQuantity,
         expiresAt: updatedData.expirationDate
           ? new Date(updatedData.expirationDate)
           : existingProduct[0].expiresAt,
-        barcode: updatedData.newBarcode || barcode, // Update barcode if changed
-        updatedAt: new Date()
+        barcode: updatedData.newBarcode || barcode,
+        updatedAt: new Date(),
+        quantityNotif,
       })
       .where(eq(Products.barcode, barcode))
       .returning();
@@ -127,7 +136,7 @@ export const deleteProduct = async (productId: string) => {
     if (existingProduct.length === 0) {
       return {
         error: "NOT_FOUND",
-        message: "No product found"
+        message: "No product found",
       };
     }
 

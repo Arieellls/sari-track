@@ -3,15 +3,21 @@ import {
   getNearExpiration,
   getReorderData,
 } from "../../_actions/getProducts";
+import { getReorderHistory } from "../../_actions/reorder";
 import AlertsProducts from "./AlertsProducts";
 
 export default async function AlertPage() {
-  const [productsNearExpiration, lowStockProducts, reorderData] =
-    await Promise.all([
-      getNearExpiration(),
-      getLowStockProducts(),
-      getReorderData(),
-    ]);
+  const [
+    productsNearExpiration,
+    lowStockProducts,
+    reorderData,
+    reorderDataHistory,
+  ] = await Promise.all([
+    getNearExpiration(),
+    getLowStockProducts(),
+    getReorderData(),
+    getReorderHistory(),
+  ]);
 
   return (
     <AlertsProducts
@@ -30,14 +36,23 @@ export default async function AlertPage() {
         barcode: product.barcode ?? undefined,
       }))}
       reorderData={reorderData.map((product) => ({
-        id: product.reorderId,
-        name: product.productName ?? "Unknown",
+        id: product.id,
+        name: product.name ?? "Unknown",
         quantity: product.quantity ?? 0,
+        expiresAt: product.expiresAt ?? undefined,
         barcode: product.barcode ?? undefined,
-        status: product.status ?? "pending",
-        remarks: product.remarks ?? undefined,
-        lastReorder: product.lastReorder ?? undefined,
       }))}
+      reorderDataHistory={reorderDataHistory.map((product) => ({
+        reorderId: product.reorderId,
+        productName: product.productName,
+        status: product.status,
+        remarks: product.remarks,
+        createdAt: product.createdAt,
+        updatedAt: product.updatedAt,
+        lastReorder: product.lastReorder,
+        productId: product.productId,
+      }))}
+
       // inStockProducts={inStock.map((product) => ({
       //   id: product.id,
       //   name: product.name ?? "Unknown",

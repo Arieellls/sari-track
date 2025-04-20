@@ -1,5 +1,3 @@
-"use client";
-
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,21 +10,23 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { useForm } from "react-hook-form";
 import { useTransition } from "react";
 import { addReorder } from "../../_actions/reorder";
 import { toast } from "@/hooks/use-toast";
+import { useForm } from "react-hook-form";
+import { Textarea } from "@/components/ui/textarea";
 
 type FormData = {
   remarks: string;
 };
 
-export function AcceptDialog({
+export function DeclineDialog({
   children,
+  className,
   product,
 }: {
   children: React.ReactNode;
+  className?: string;
   product: { id: string }; // typing only id for now, adjust as needed
 }) {
   const { register, handleSubmit, reset } = useForm<FormData>();
@@ -37,21 +37,21 @@ export function AcceptDialog({
       const res = await addReorder({
         product_id: product.id,
         remarks: data.remarks || "",
-        status: "accepted",
+        status: "declined",
       });
 
       if (!res.error) {
         toast({
-          title: "Reorder Successful",
-          description: "Your reorder has been successfully placed.",
+          title: "Decline Successful",
+          description: "The request has been successfully declined.",
           variant: "default",
         });
         reset();
       } else {
         toast({
-          title: "Reorder Failed",
+          title: "Decline Failed",
           description:
-            res.message || "An error occurred while placing the reorder.",
+            res.message || "An error occurred while declining the request.",
           variant: "destructive",
         });
         console.error(res.message);
@@ -64,7 +64,8 @@ export function AcceptDialog({
       <AlertDialogTrigger asChild>
         <Button
           asChild
-          className="rounded border border-emerald-500 bg-transparent px-6 py-1 text-sm text-emerald-500 transition-colors hover:bg-emerald-50 dark:hover:bg-emerald-900/30"
+          variant="outline"
+          className={`bg-transparent ${className}`}
         >
           {children}
         </Button>
@@ -72,10 +73,11 @@ export function AcceptDialog({
       <AlertDialogContent className="w-96 rounded-lg sm:w-[500px]">
         <form onSubmit={handleSubmit(onSubmit)}>
           <AlertDialogHeader>
-            <AlertDialogTitle>Confirm Reorder</AlertDialogTitle>
+            <AlertDialogTitle>Decline Reorder Confirmation</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to reorder this product? This action will
-              place a new order based on the previous one.
+              Are you sure you want to decline this product reorder? This action
+              cannot be undone and the reorder request will be permanently
+              dismissed.
             </AlertDialogDescription>
           </AlertDialogHeader>
 
@@ -97,16 +99,15 @@ export function AcceptDialog({
           </div>
 
           <AlertDialogFooter>
-            <AlertDialogCancel type="button" disabled={isPending}>
-              Cancel
-            </AlertDialogCancel>
-            <AlertDialogAction asChild>
-              <button
-                type="submit"
-                disabled={isPending}
-                className="inline-flex w-full items-center justify-center"
-              >
-                {isPending ? "Submitting..." : "Continue"}
+            <AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              asChild
+              type="submit"
+              disabled={isPending}
+              className="bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90 dark:hover:bg-destructive/80"
+            >
+              <button type="submit" disabled={isPending}>
+                {isPending ? "Deleting..." : "Delete"}
               </button>
             </AlertDialogAction>
           </AlertDialogFooter>

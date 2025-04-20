@@ -20,6 +20,7 @@ export const Products = pgTable("product", {
   expiresAt: timestamp("expiresat"),
   createdAt: timestamp("xata_createdat").defaultNow(),
   updatedAt: timestamp("xata_updatedat").defaultNow(),
+  quantityNotif: boolean("quantity_notif").notNull(),
 });
 
 export const reorder = pgTable("reorder", {
@@ -30,6 +31,7 @@ export const reorder = pgTable("reorder", {
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
   lastReorder: timestamp("last_reorder"),
+  reorder_count: integer("reorder_count"),
 });
 
 // export const User = pgTable("user", {
