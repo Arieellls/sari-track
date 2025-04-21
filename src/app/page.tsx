@@ -15,14 +15,14 @@ export default async function HomePage() {
   console.log(user);
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <header className="z-[50] sticky top-0 w-full bg-background/95 border-b backdrop-blur-sm dark:bg-black/[0.6] border-border/40">
-        <div className="container h-14 flex items-center">
+    <div className="flex min-h-screen flex-col">
+      <header className="sticky top-0 z-[50] w-full border-b border-border/40 bg-background/95 backdrop-blur-sm dark:bg-black/[0.6]">
+        <div className="container flex h-14 items-center">
           <Link
             href="/"
-            className="flex justify-start items-center hover:opacity-85 transition-opacity duration-300"
+            className="flex items-center justify-start transition-opacity duration-300 hover:opacity-85"
           >
-            <PanelsTopLeft className="w-6 h-6 mr-3" />
+            <PanelsTopLeft className="mr-3 h-6 w-6" />
             <span className="font-bold">Sari-Track</span>
             <span className="sr-only">Sari-Track</span>
           </Link>
@@ -30,7 +30,7 @@ export default async function HomePage() {
             <Button
               variant="outline"
               size="icon"
-              className="rounded-full w-8 h-8 bg-background"
+              className="h-8 w-8 rounded-full bg-background"
               asChild
             >
               {/* <Link href="https://github.com/Arieellls/">
@@ -68,41 +68,41 @@ export default async function HomePage() {
               </Button>
             </div>
           </section>
-          <div className="w-full flex justify-center relative">
+          <div className="relative flex w-full justify-center">
             <Image
-              src="/demo-light-min.png"
+              src="/landing-page-image.png"
               width={1080}
               height={608}
               alt="demo"
               priority
-              className="border rounded-xl shadow-sm dark:hidden"
+              className="rounded-xl border shadow-sm dark:hidden"
             />
             <Image
-              src="/demo-dark-min.png"
+              src="/landing-page-image.png"
               width={1080}
               height={608}
               alt="demo-dark"
               priority
-              className="border border-zinc-600 rounded-xl shadow-sm hidden dark:block dark:shadow-gray-500/5"
+              className="hidden rounded-xl border border-zinc-600 shadow-sm dark:block dark:shadow-gray-500/5"
             />
             <Image
-              src="/demo-mobile-light-min.png"
+              src="/landing-page-image.png"
               width={228}
               height={494}
               alt="demo-mobile"
-              className="border rounded-xl absolute bottom-0 right-0 hidden lg:block dark:hidden"
+              className="absolute bottom-0 right-0 hidden rounded-xl border dark:hidden lg:block"
             />
             <Image
-              src="/demo-mobile-dark-min.png"
+              src="/landing-page-image.png"
               width={228}
               height={494}
               alt="demo-mobile"
-              className="border border-zinc-600 rounded-xl absolute bottom-0 right-0 hidden dark:lg:block"
+              className="absolute bottom-0 right-0 hidden rounded-xl border border-zinc-600 dark:lg:block"
             />
           </div>
         </div>
       </main>
-      <footer className="py-6 md:py-0 border-t border-border/40">
+      {/* <footer className="py-6 md:py-0 border-t border-border/40">
         <div className="container flex flex-col items-center justify-center gap-4 md:h-24 md:flex-row">
           <p className="text-balance text-center text-sm leading-loose text-muted-foreground">
             Built on top of{" "}
@@ -126,7 +126,7 @@ export default async function HomePage() {
             .
           </p>
         </div>
-      </footer>
+      </footer> */}
     </div>
   );
 }
