@@ -52,12 +52,7 @@ export function DeleteDialog({
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild className="w-full">
-        <Button
-          asChild
-          variant="destructive"
-          onClick={handleDelete}
-          className="w-full"
-        >
+        <Button asChild variant="destructive" className="w-full">
           {children}
         </Button>
       </AlertDialogTrigger>
@@ -71,7 +66,7 @@ export function DeleteDialog({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction>Continue</AlertDialogAction>
+          <AlertDialogAction onClick={handleDelete}>Continue</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
