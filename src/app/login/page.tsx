@@ -47,7 +47,7 @@ export default function Login() {
       >
         <div className="my-4 self-start">
           <h1 className="text-xl font-semibold">
-            Sari-Track Management System
+            SARI-Track: Smart Automated Retail Inventory
           </h1>
           <p className="text-sm text-gray-500">Login your account</p>
         </div>

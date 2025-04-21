@@ -38,19 +38,19 @@ export default function Register() {
   };
 
   return (
-    <div className="relative flex items-center justify-center w-full min-h-screen">
+    <div className="relative flex min-h-screen w-full items-center justify-center">
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col items-center justify-center h-full w-96"
+        className="flex h-full w-96 flex-col items-center justify-center"
       >
         <div className="my-4 self-start">
           <h1 className="text-xl font-semibold">
-            Sari-Track Management System
+            SARI-Track: Smart Automated Retail Inventory
           </h1>
           <p className="text-sm text-gray-500">Create your account</p>
         </div>
 
-        <div className="w-full pt-2 space-y-2">
+        <div className="w-full space-y-2 pt-2">
           <Label htmlFor="name">Name</Label>
           <Input
             type="text"
@@ -62,7 +62,7 @@ export default function Register() {
           />
         </div>
 
-        <div className="w-full pt-2 space-y-2">
+        <div className="w-full space-y-2 pt-2">
           <Label htmlFor="email">Email</Label>
           <Input
             type="email"
@@ -74,7 +74,7 @@ export default function Register() {
           />
         </div>
 
-        <div className="w-full pt-2 space-y-2">
+        <div className="w-full space-y-2 pt-2">
           <Label htmlFor="password">Password</Label>
           <Input
             type="password"
@@ -88,7 +88,7 @@ export default function Register() {
 
         {error && <p className="text-red-500">{error}</p>}
 
-        <Button type="submit" className="w-full mt-6" disabled={isPending}>
+        <Button type="submit" className="mt-6 w-full" disabled={isPending}>
           {isPending ? <Loader2 className="animate-spin" /> : "Sign Up"}
         </Button>
 
@@ -96,10 +96,10 @@ export default function Register() {
           asChild
           variant="secondary"
           disabled={isPending}
-          className="w-full mt-5"
+          className="mt-5 w-full"
         >
           <Link
-            className={`bg-slate-300 hover:bg-slate-200 w-full text-center py-2 rounded ${
+            className={`w-full rounded bg-slate-300 py-2 text-center hover:bg-slate-200 ${
               isPending ? "pointer-events-none opacity-50" : ""
             }`}
             href="/login"
