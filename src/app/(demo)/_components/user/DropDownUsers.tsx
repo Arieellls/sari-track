@@ -5,6 +5,7 @@ import React from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
@@ -12,8 +13,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
-import { changeUserRole } from "../../_actions/userActions";
+import { changeUserRole, deleteUser } from "../../_actions/userActions";
 import { toast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@radix-ui/react-dropdown-menu";
+import { DeleteDialog } from "./DeleteDialog";
 
 export default function DropDownUsers({
   id,
@@ -74,6 +78,12 @@ export default function DropDownUsers({
               Owner
             </DropdownMenuRadioItem>
           </DropdownMenuRadioGroup>
+          <Separator className="my-2" />
+          <div className="mt-2 w-full border-t border-gray-200 pt-3">
+            <DeleteDialog userId={id}>
+              <button>Delete</button>
+            </DeleteDialog>
+          </div>
         </DropdownMenuContent>
       </DropdownMenu>
     </>
