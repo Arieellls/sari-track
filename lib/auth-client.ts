@@ -1,4 +1,4 @@
 import { createAuthClient } from "better-auth/react";
 export const authClient = createAuthClient({
-  baseURL: process.env.BETTER_AUTH_URL,
+  baseURL: "https://sari-track.vercel.app", // Hardcoded for testing
 });
