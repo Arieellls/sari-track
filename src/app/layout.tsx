@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { GeistSans } from "geist/font/sans";
 
 import "./globals.css";
@@ -8,36 +8,41 @@ import { Toaster } from "@/components/ui/toaster";
 // import { AuthProvider } from "@/components/providers/auth-provider";
 
 export const metadata: Metadata = {
+  manifest: "/manifest.json",
   metadataBase: new URL(
     process.env.APP_URL
       ? `${process.env.APP_URL}`
       : process.env.VERCEL_URL
-      ? `https://${process.env.VERCEL_URL}`
-      : `http://localhost:${process.env.PORT || 3000}`
+        ? `https://${process.env.VERCEL_URL}`
+        : `http://localhost:${process.env.PORT || 3000}`,
   ),
   title: "Sari-Track",
   description:
     "A Web Application for Smarter, Faster, and Effortless Inventory Management",
   alternates: {
-    canonical: "/"
+    canonical: "/",
   },
   openGraph: {
     url: "/",
     title: "Sari-Track",
     description:
       "A Web Application for Smarter, Faster, and Effortless Inventory Management",
-    type: "website"
+    type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "Sari-Track",
     description:
-      "A Web Application for Smarter, Faster, and Effortless Inventory Management"
-  }
+      "A Web Application for Smarter, Faster, and Effortless Inventory Management",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#ffffff",
 };
 
 export default function RootLayout({
-  children
+  children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
