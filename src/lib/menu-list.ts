@@ -8,7 +8,7 @@ import {
   LucideIcon,
   BaggageClaim,
   BellRing,
-  AreaChart
+  AreaChart,
 } from "lucide-react";
 
 type Submenu = {
@@ -30,8 +30,8 @@ type Group = {
   menus: Menu[];
 };
 
-export function getMenuList(pathname: string): Group[] {
-  return [
+export function getMenuList(pathname: string, role?: string): Group[] {
+  const menuGroups: Group[] = [
     {
       groupLabel: "",
       menus: [
@@ -39,9 +39,9 @@ export function getMenuList(pathname: string): Group[] {
           href: "/dashboard",
           label: "Dashboard",
           icon: LayoutGrid,
-          submenus: []
-        }
-      ]
+          submenus: [],
+        },
+      ],
     },
     {
       groupLabel: "Contents",
@@ -49,34 +49,45 @@ export function getMenuList(pathname: string): Group[] {
         {
           href: "/inventory",
           label: "Inventory",
-          icon: BaggageClaim
+          icon: BaggageClaim,
         },
         {
           href: "/alerts-and-notifications",
           label: "Alerts and Notifications",
-          icon: BellRing
+          icon: BellRing,
         },
         {
           href: "/sales-analytics",
           label: "Sales Analytics",
-          icon: AreaChart
-        }
-      ]
+          icon: AreaChart,
+        },
+      ],
     },
     {
       groupLabel: "Settings",
       menus: [
         {
-          href: "/users",
-          label: "Users",
-          icon: Users
-        },
-        {
           href: "/account",
           label: "Account",
-          icon: Settings
-        }
-      ]
-    }
+          icon: Settings,
+        },
+      ],
+    },
   ];
+
+  // Only include the Users menu item if the user is an admin or owner
+  if (role === "admin" || role === "owner") {
+    const settingsGroup = menuGroups.find(
+      (group) => group.groupLabel === "Settings",
+    );
+    if (settingsGroup) {
+      settingsGroup.menus.unshift({
+        href: "/users",
+        label: "Users",
+        icon: Users,
+      });
+    }
+  }
+
+  return menuGroups;
 }

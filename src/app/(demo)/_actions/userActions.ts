@@ -81,6 +81,24 @@ export const declineUser = async (userId: string) => {
   }
 };
 
+export const deleteUser = async (userId: string) => {
+  if (!userId) {
+    console.error("User ID is required for deletion.");
+    return false;
+  }
+
+  try {
+    await db.delete(user).where(eq(user.id, userId));
+
+    console.log(`User ${userId} deleted successfully.`);
+    revalidatePath("/users");
+    return true;
+  } catch (error) {
+    console.error(`Error deleting user ${userId}:`, error);
+    return false;
+  }
+};
+
 export const changeUserRole = async (userId: string, newRole: string) => {
   try {
     await db.update(user).set({ role: newRole }).where(eq(user.id, userId));
