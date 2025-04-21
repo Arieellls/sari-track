@@ -6,7 +6,7 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle
+  AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,7 +15,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,7 +24,7 @@ import { z } from "zod";
 import { useEffect, useState } from "react";
 import {
   updateProductQuantity,
-  updateProductExpiry
+  updateProductExpiry,
 } from "../../_actions/getProducts";
 import { useToast } from "@/hooks/use-toast";
 
@@ -41,15 +41,15 @@ type AlertActionDialogProps = {
 const formSchema = z.object({
   quantity: z
     .number()
-    .min(1, { message: "Quantity must be at least 1." })
+    .min(11, { message: "Quantity must be at least 1." })
     .max(1000, { message: "Quantity must be at most 1000." })
     .optional(),
   expiryDate: z
     .string()
     .refine((date) => !isNaN(Date.parse(date)), {
-      message: "Invalid date format."
+      message: "Invalid date format.",
     })
-    .optional()
+    .optional(),
 });
 
 export function AlertActionDialog({
@@ -58,7 +58,7 @@ export function AlertActionDialog({
   onOpenChange,
   quantity,
   expiryDate,
-  mode = "low-stock" // Default to low-stock if mode is undefined
+  mode = "low-stock", // Default to low-stock if mode is undefined
 }: AlertActionDialogProps) {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -67,13 +67,6 @@ export function AlertActionDialog({
 
   // Log props when they change
   useEffect(() => {
-    console.log("AlertActionDialog Props:", {
-      id,
-      open,
-      quantity,
-      expiryDate,
-      mode
-    });
     // Update currentMode when mode prop changes
     setCurrentMode(mode);
   }, [id, open, quantity, expiryDate, mode]);
@@ -82,8 +75,8 @@ export function AlertActionDialog({
     resolver: zodResolver(formSchema),
     defaultValues: {
       quantity: quantity || 1,
-      expiryDate: expiryDate || ""
-    }
+      expiryDate: expiryDate || "",
+    },
   });
 
   // Update form values when props change or dialog opens
@@ -92,7 +85,7 @@ export function AlertActionDialog({
       console.log("Dialog opened with mode:", currentMode);
       form.reset({
         quantity: quantity || 1,
-        expiryDate: expiryDate || ""
+        expiryDate: expiryDate || "",
       });
       setIsSubmitting(false);
     }
@@ -116,7 +109,7 @@ export function AlertActionDialog({
 
       // Make sure we have a valid quantity for low-stock mode
       if (currentMode === "low-stock" || currentMode === "reorder") {
-        const quantityValue = data.quantity || 1; // Ensure we have a fallback
+        const quantityValue = data.quantity || 10; // Ensure we have a fallback
         console.log("Updating quantity to:", quantityValue, "for id:", id);
 
         response = await updateProductQuantity(id, quantityValue);
@@ -125,7 +118,7 @@ export function AlertActionDialog({
         if (response?.success) {
           toast({
             title: "Success",
-            description: `Product quantity updated to ${quantityValue}`
+            description: `Product quantity updated to ${quantityValue}`,
           });
         }
       }
@@ -139,13 +132,13 @@ export function AlertActionDialog({
         if (response?.success) {
           toast({
             title: "Success",
-            description: `Product expiry date updated to ${data.expiryDate}`
+            description: `Product expiry date updated to ${data.expiryDate}`,
           });
         }
       } else {
         console.error("Invalid mode or missing data:", {
           mode: currentMode,
-          data
+          data,
         });
         throw new Error("Invalid mode or missing data");
       }
@@ -163,7 +156,7 @@ export function AlertActionDialog({
         title: "Error",
         description:
           error instanceof Error ? error.message : "Something went wrong.",
-        variant: "destructive"
+        variant: "destructive",
       });
 
       // Reset submitting state on error to allow retry
@@ -190,7 +183,7 @@ export function AlertActionDialog({
           <AlertDialogDescription>
             {currentMode === "expiry"
               ? "Please enter the new expiration date for the product."
-              : "Please enter the new quantity for the product (1-1000)."}
+              : "Please enter the new quantity for the product (11-1000)."}
           </AlertDialogDescription>
         </AlertDialogHeader>
 

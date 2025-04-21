@@ -4,37 +4,30 @@ import { ModeToggle } from "@/components/mode-toggle";
 import { UserNav } from "@/components/admin-panel/user-nav";
 import { SheetMenu } from "@/components/admin-panel/sheet-menu";
 import { getUser } from "../../../server/user";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useUserStore } from "@/hooks/useUserStore";
 
 interface NavbarProps {
   title: string;
 }
 
-// Match the expected UserNav prop structure
-type UserType = {
-  id: string;
-  name: string;
-  email: string;
-  emailVerified: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-  image?: string | null;
-};
-
 export function Navbar({ title }: NavbarProps) {
-  const [user, setUser] = useState<UserType | undefined>(undefined);
+  const user = useUserStore((state) => state.user);
+  const setUser = useUserStore((state) => state.setUser);
 
   useEffect(() => {
     const fetchUser = async () => {
       const fetchedUser = await getUser();
-      setUser(fetchedUser); // UserType | undefined
+      if (fetchedUser) {
+        setUser(fetchedUser);
+      }
     };
     fetchUser();
-  }, []);
+  }, [setUser]);
 
   return (
     <header className="sticky top-0 z-10 w-full bg-background/95 shadow backdrop-blur supports-[backdrop-filter]:bg-background/60 dark:shadow-secondary">
-      <div className="mx-4 sm:mx-8 flex h-14 items-center">
+      <div className="mx-4 flex h-14 items-center sm:mx-8">
         <div className="flex items-center space-x-4 lg:space-x-0">
           <SheetMenu />
           <h1 className="font-bold">{title}</h1>

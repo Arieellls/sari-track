@@ -1,15 +1,21 @@
 import Link from "next/link";
 
 import PlaceholderContent from "@/components/demo/placeholder-content";
-import ContentLayout from "@/components/admin-panel/content-layout";
+
 import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
-  BreadcrumbSeparator
+  BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import ProductTile from "../_components/inventory/ProductTile";
+import SectionWrapper from "../_components/Wrapper";
+import Products from "../_components/inventory/Products";
+import ProductPage from "../_components/inventory/ProductPage";
+import ContentLayout from "@/components/admin-panel/content-layout";
+import SalesPage from "../_components/sales-analytics/SalesPage";
 
 export default function CategoriesPage() {
   return (
@@ -33,7 +39,9 @@ export default function CategoriesPage() {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <PlaceholderContent />
+      <SectionWrapper>
+        <SalesPage />
+      </SectionWrapper>
     </ContentLayout>
   );
 }

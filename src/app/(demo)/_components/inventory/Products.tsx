@@ -9,13 +9,14 @@ import {
   SelectItem,
   SelectLabel,
   SelectTrigger,
-  SelectValue
+  SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { searchProduct } from "../../_actions/getProducts";
 import { AddDialog } from "../AddDialog";
 import { ProductDialog } from "./ProductDialog";
+import { UpdateDialog } from "./UpdateDialog";
 
 interface Product {
   id: string;
@@ -38,7 +39,7 @@ export default function Products({
   initialProducts = [],
   productsNearExpiration = [],
   outOfStockProducts = [],
-  inStockProducts = []
+  inStockProducts = [],
 }: ProductsProps) {
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -61,7 +62,7 @@ export default function Products({
       case "low-stock":
         return initialProducts.filter(
           (product) =>
-            (product.quantity ?? 0) <= 5 && (product.quantity ?? 0) > 0
+            (product.quantity ?? 0) <= 5 && (product.quantity ?? 0) > 0,
         );
       case "out-of-stock":
         return outOfStockProducts;
@@ -115,16 +116,16 @@ export default function Products({
   };
 
   return (
-    <div className="flex flex-col gap-8 min-h-[calc(100vh-56px-64px-20px-24px-56px-48px)] w-[100%]">
-      <div className="flex flex-col gap-6 justify-between w-full sm:flex-row">
-        <div className="flex gap-2 flex-col-reverse w-full sm:flex-row">
+    <div className="flex min-h-[calc(100vh-56px-64px-20px-24px-56px-48px)] w-[100%] flex-col gap-8">
+      <div className="flex w-full flex-col justify-between gap-3 sm:flex-row">
+        <div className="flex w-full flex-col-reverse gap-2 sm:flex-row">
           {!searchResult && (
             <Filter
               selectedFilter={selectedFilter}
               setSelectedFilter={setSelectedFilter}
             />
           )}
-          <div className="flex gap-2 w-full">
+          <div className="flex w-full gap-2">
             <Input
               type="text"
               placeholder="Search for a product..."
@@ -152,33 +153,34 @@ export default function Products({
           </div>
         </div>
         <AddDialog />
+        <UpdateDialog />
       </div>
 
       <div className="flex flex-col gap-2">
         <h1
-          className={`text-2xl text-left font-bold ${
+          className={`text-left text-2xl font-bold ${
             !searchResult && noSearchResults ? "text-center" : "sm:text-left"
           }`}
         >
           {searchResult
             ? "Search Result"
             : searchPerformed && noSearchResults
-            ? "Search Results"
-            : selectedFilter === "all"
-            ? "Inventory List"
-            : selectedFilter === "in-stock"
-            ? "In Stock Products"
-            : selectedFilter === "low-stock"
-            ? "Low Stock Products"
-            : "Out of Stock Products"}
+              ? "Search Results"
+              : selectedFilter === "all"
+                ? "Inventory List"
+                : selectedFilter === "in-stock"
+                  ? "In Stock Products"
+                  : selectedFilter === "low-stock"
+                    ? "Low Stock Products"
+                    : "Out of Stock Products"}
         </h1>
-        <div className="w-full flex flex-col gap-4 sm:flex-wrap sm:flex-row">
+        <div className="flex w-full flex-col gap-4 sm:flex-row sm:flex-wrap">
           {noSearchResults ? (
-            <div className="w-full flex flex-col items-center py-8">
-              <p className="text-gray-500 mb-2">
+            <div className="flex w-full flex-col items-center py-8">
+              <p className="mb-2 text-gray-500">
                 No products found matching &quot;{searchQuery}&quot;.
               </p>
-              <p className="text-gray-400 text-sm">
+              <p className="text-sm text-gray-400">
                 Try searching with a different product name or barcode
               </p>
             </div>
@@ -187,6 +189,7 @@ export default function Products({
               <ProductTile
                 key={product.id}
                 id={product.id}
+                barcode={product.barcode || "No Barcode"}
                 name={product.name || "Unknown Product"}
                 quantity={product.quantity || 0}
                 expires={
@@ -248,7 +251,7 @@ export default function Products({
 
 function Filter({
   selectedFilter,
-  setSelectedFilter
+  setSelectedFilter,
 }: {
   selectedFilter: string;
   setSelectedFilter: (value: string) => void;

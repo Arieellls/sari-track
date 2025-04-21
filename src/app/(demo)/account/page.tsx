@@ -7,11 +7,13 @@ import {
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
-  BreadcrumbSeparator
+  BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import ContentLayout from "@/components/admin-panel/content-layout";
+import SectionWrapper from "../_components/Wrapper";
+import AccountPage from "../_components/account/AccountPage";
 
-export default function AccountPage() {
+export default function AccountsPage() {
   return (
     <ContentLayout title="Account">
       <Breadcrumb>
@@ -33,7 +35,9 @@ export default function AccountPage() {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <PlaceholderContent />
+      <SectionWrapper>
+        <AccountPage />
+      </SectionWrapper>
     </ContentLayout>
   );
 }

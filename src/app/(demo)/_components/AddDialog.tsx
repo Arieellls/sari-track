@@ -8,7 +8,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger
+  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { AddProductForm } from "./inventory/AddProductForm";
@@ -23,7 +23,7 @@ export function AddDialog() {
           Add Product
         </Button>
       </AlertDialogTrigger>
-      <AlertDialogContent className="max-w-[425px] sm:max-w-[500px] rounded-lg">
+      <AlertDialogContent className="w-96 rounded-lg sm:w-[500px]">
         <AlertDialogHeader>
           <AlertDialogTitle>Add a New Product</AlertDialogTitle>
           <AlertDialogDescription>

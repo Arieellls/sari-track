@@ -3,7 +3,7 @@
 import { XataHttpClient } from "drizzle-orm/xata-http";
 import { drizzle } from "drizzle-orm/xata-http";
 import { getXataClient } from "../../../db/xata-client";
-import { Products } from "@/db/schema";
+import { Products, reorder } from "@/db/schema";
 import {
   desc,
   and,
@@ -12,7 +12,9 @@ import {
   lte,
   gt,
   eq,
-  like
+  lt,
+  like,
+  notInArray,
 } from "drizzle-orm/expressions";
 import { sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
@@ -61,11 +63,11 @@ export const getNearExpiration = async () => {
           isNotNull(Products.expiresAt),
           lte(
             Products.expiresAt,
-            new Date(currentDate.getTime() + 30 * 24 * 60 * 60 * 1000)
+            new Date(currentDate.getTime() + 30 * 24 * 60 * 60 * 1000),
           ),
           gt(Products.expiresAt, currentDate),
-          gt(Products.quantity, 0) // Ensure quantity is greater than 0
-        )
+          gt(Products.quantity, 0), // Ensure quantity is greater than 0
+        ),
       )
       .orderBy(asc(Products.expiresAt));
 
@@ -117,7 +119,22 @@ export const getLowStockProducts = async () => {
       .select()
       .from(Products)
       .where(lte(Products.quantity, 10))
-      .orderBy(desc(Products.createdAt));
+      .orderBy(asc(Products.quantity)); // sort by lowest quantity first
+
+    return lowStockProducts;
+  } catch (error) {
+    console.error("Error fetching low stock products:", error);
+    return [];
+  }
+};
+
+export const getReorderData = async () => {
+  try {
+    const lowStockProducts = await db
+      .select()
+      .from(Products)
+      .where(and(lte(Products.quantity, 10), eq(Products.quantityNotif, true)))
+      .orderBy(asc(Products.quantity)); // sort by lowest quantity first
 
     return lowStockProducts;
   } catch (error) {
@@ -133,16 +150,16 @@ interface UpdateProductQuantityResponse {
 
 export const updateProductQuantity = async (
   productId: string,
-  newQuantity: number
+  newQuantity: number,
 ): Promise<UpdateProductQuantityResponse> => {
   try {
     await db
       .update(Products)
-      .set({ quantity: newQuantity })
+      .set({ quantity: newQuantity, quantityNotif: false })
       .where(eq(Products.id, productId));
 
     console.log(`Updated product ${productId} quantity to ${newQuantity}`);
-    revalidatePath("/alerts-and-notifications"); // Revalidate the inventory page to reflect changes
+    revalidatePath("/alerts-and-notifications");
     revalidatePath("/inventory");
     return { success: true };
   } catch (error) {
@@ -168,7 +185,29 @@ export const updateProductExpiry = async (id: string, expiryDate: string) => {
     console.error("Error updating product expiry:", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : "An error occurred."
+      error: error instanceof Error ? error.message : "An error occurred.",
+    };
+  }
+};
+
+export const getProductById = async (barcode: string) => {
+  try {
+    const product = await db
+      .select()
+      .from(Products)
+      .where(eq(Products.barcode, barcode))
+      .limit(1);
+
+    if (product.length > 0) {
+      return { success: true, data: product[0] };
+    } else {
+      return { success: false, error: "Product not found." };
+    }
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "An error occurred.",
     };
   }
 };

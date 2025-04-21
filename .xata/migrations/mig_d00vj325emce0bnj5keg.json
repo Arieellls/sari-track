@@ -1,0 +1,20 @@
+{
+  "done": true,
+  "migration": {
+    "name": "mig_d00vj325emce0bnj5keg",
+    "operations": [
+      {
+        "alter_column": {
+          "name": "updatedat",
+          "table": "verification",
+          "column": "updatedAt"
+        }
+      }
+    ]
+  },
+  "migrationType": "pgroll",
+  "name": "mig_d00vj325emce0bnj5keg",
+  "parent": "mig_d00viuf1875465e5asr0",
+  "schema": "public",
+  "startedAt": "2025-04-18T07:04:44.841352Z"
+}

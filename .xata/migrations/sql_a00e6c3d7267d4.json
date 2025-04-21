@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_a00e6c3d7267d4",
+    "operations": [
+      {
+        "sql": {
+          "up": "CREATE TABLE reorder (xata_id text PRIMARY KEY, product_id text REFERENCES product (xata_id), request_quantity int NOT NULL, status varchar(20) DEFAULT 'pending', remarks text, created_at timestamp DEFAULT current_timestamp, last_reorder timestamp, updated_at timestamp DEFAULT current_timestamp)"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_a00e6c3d7267d4",
+  "parent": "mig_d016dp6srhqeh7cgn5l0",
+  "schema": "public",
+  "startedAt": "2025-04-19T12:18:34.225973Z"
+}
