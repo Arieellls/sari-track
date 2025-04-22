@@ -34,23 +34,20 @@ export default function DropDownUsers({
 
     startTransition(async () => {
       try {
-        const response = await changeUserRole(id, newRole);
+        const { success, message } = await changeUserRole(id, newRole);
 
-        if (response) {
-          toast({
-            title: "Success",
-            description: "User role updated successfully",
-            variant: "default",
-          });
-        } else {
-          toast({
-            title: "Error",
-            description: "Failed to update user role",
-            variant: "destructive",
-          });
-        }
+        toast({
+          title: success ? "Success" : "Error",
+          description: message,
+          variant: success ? "default" : "destructive",
+        });
       } catch (error) {
-        console.error("Error updating user role:", error);
+        console.error("Unexpected error updating user role:", error);
+        toast({
+          title: "Unexpected Error",
+          description: "Something went wrong while updating the role.",
+          variant: "destructive",
+        });
       }
     });
   };

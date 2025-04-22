@@ -81,34 +81,80 @@ export const declineUser = async (userId: string) => {
   }
 };
 
-export const deleteUser = async (userId: string) => {
+export const deleteUser = async (
+  userId: string,
+): Promise<{ success: boolean; error?: string }> => {
   if (!userId) {
-    console.error("User ID is required for deletion.");
-    return false;
+    return { success: false, error: "User ID is required for deletion." };
   }
 
   try {
-    await db.delete(user).where(eq(user.id, userId));
+    const foundUser = await db
+      .select()
+      .from(user)
+      .where(eq(user.id, userId))
+      .limit(1);
 
-    console.log(`User ${userId} deleted successfully.`);
+    if (!foundUser.length) {
+      return { success: false, error: `User with ID ${userId} not found.` };
+    }
+
+    const userToDelete = foundUser[0];
+
+    if (userToDelete.role === "admin" || userToDelete.role === "owner") {
+      return {
+        success: false,
+        error: "Cannot delete a user with the role 'admin' or 'owner'.",
+      };
+    }
+
+    await db.delete(user).where(eq(user.id, userId));
     revalidatePath("/users");
-    return true;
-  } catch (error) {
-    console.error(`Error deleting user ${userId}:`, error);
-    return false;
+
+    return { success: true };
+  } catch (error: any) {
+    return {
+      success: false,
+      error: `An error occurred while deleting user: ${error.message}`,
+    };
   }
 };
 
-export const changeUserRole = async (userId: string, newRole: string) => {
+export const changeUserRole = async (
+  userId: string,
+  newRole: string,
+): Promise<{ success: boolean; message: string }> => {
   try {
+    // Fetch the current role of the user
+    const existingUser = await db
+      .select()
+      .from(user)
+      .where(eq(user.id, userId))
+      .limit(1);
+
+    if (!existingUser.length) {
+      return { success: false, message: "User not found." };
+    }
+
+    if (existingUser[0].role === "admin" || existingUser[0].role === "owner") {
+      return {
+        success: false,
+        message:
+          "You are not allowed to change the role of an admin or owner user.",
+      };
+    }
+
     await db.update(user).set({ role: newRole }).where(eq(user.id, userId));
 
-    console.log(`User ${userId} role changed to ${newRole} successfully.`);
+    const message = `User ${userId} role changed to ${newRole} successfully.`;
+    console.log(message);
     revalidatePath("/users");
-    return true;
+
+    return { success: true, message };
   } catch (error) {
-    console.error(`Error changing role for user ${userId}:`, error);
-    return false;
+    const message = `Error changing role for user ${userId}: ${error}`;
+    console.error(message);
+    return { success: false, message };
   }
 };
 
