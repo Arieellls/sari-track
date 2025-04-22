@@ -16,6 +16,8 @@ import { useTransition } from "react";
 import { deleteUser } from "../../_actions/userActions";
 import { toast } from "@/hooks/use-toast";
 
+type DeleteUserResponse = { success: boolean; error?: string };
+
 export function DeleteDialog({
   children,
   userId,
@@ -28,9 +30,9 @@ export function DeleteDialog({
   const handleDelete = async () => {
     startTransition(async () => {
       try {
-        const response = await deleteUser(userId);
+        const response: DeleteUserResponse = await deleteUser(userId);
 
-        if (response) {
+        if (response.success) {
           toast({
             title: "Success",
             description: "User deleted successfully",
@@ -39,7 +41,7 @@ export function DeleteDialog({
         } else {
           toast({
             title: "Error",
-            description: "Failed to delete user",
+            description: response.error || "An unknown error occurred",
             variant: "destructive",
           });
         }

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Ellipsis, LogOut } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 
 import { cn } from "@/lib/utils";
 import { getMenuList } from "@/lib/menu-list";
@@ -18,33 +18,41 @@ import {
 } from "@/components/ui/tooltip";
 import { authClient } from "../../../lib/auth-client";
 import { getUser, getUserRole } from "../../../server/user";
+import React from "react";
 
 interface MenuProps {
   isOpen: boolean | undefined;
 }
 
-export function Menu({ isOpen }: MenuProps) {
+export const Menu = React.memo(function Menu({ isOpen }: MenuProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const [menuList, setMenuList] = useState(getMenuList(pathname));
+  const [userRole, setUserRole] = useState("");
+
+  // Memoize menuList based on pathname and userRole
+  const menuList = useMemo(
+    () => getMenuList(pathname, userRole),
+    [pathname, userRole],
+  );
 
   useEffect(() => {
+    // Only fetch user role once or when pathname changes
     const fetchUserRole = async () => {
       try {
         const fetchedUser = await getUser();
         const userDetails = await getUserRole(fetchedUser?.email ?? "");
-        // Update menuList based on user role
-        const userMenuList = getMenuList(pathname, userDetails?.role ?? "");
-        setMenuList(userMenuList);
+        if (userDetails?.role !== userRole) {
+          setUserRole(userDetails?.role ?? "");
+        }
       } catch (error) {
         console.error("Error fetching user role:", error);
       }
     };
 
     fetchUserRole();
-  }, [pathname]);
+  }, [pathname, userRole]);
 
-  const handleSignOut = async () => {
+  const handleSignOut = useCallback(async () => {
     console.log("Attempting to sign out...");
     try {
       authClient.signOut();
@@ -52,7 +60,7 @@ export function Menu({ isOpen }: MenuProps) {
     } catch (error) {
       console.error("Error during logout:", error);
     }
-  };
+  }, [router]);
 
   return (
     <ScrollArea className="[&>div>div[style]]:!block">
@@ -175,4 +183,4 @@ export function Menu({ isOpen }: MenuProps) {
       </nav>
     </ScrollArea>
   );
-}
+});
